@@ -31,7 +31,7 @@ namespace GemGuiTest
         {
             GuiRoot = new GemGui.Root(
                 GraphicsDevice,
-                new Rectangle(0, 0, 800, 600),
+                new Rectangle(0, 0, 640, 480),
                 this.Content,
                 "Content/gui/draw",
                 "Content/gui/sheets.txt");
@@ -54,11 +54,10 @@ namespace GemGuiTest
                 new GemGui.WidgetProperties()
                 {
                     Text = "OPTION ONE",
-                    BackgroundColor = new Vector4(1, 0, 0, 1),
                     Border = "thin",
                     OnClick = (args) => { frame.Properties.Text = "Clicked One"; frame.Invalidate(); },
-                    TextHorizontalAlign = WidgetProperties.HorizontalAlign.Left,
-                    TextVerticalAlign = WidgetProperties.VerticalAlign.Top,
+                    TextHorizontalAlign = WidgetProperties.HorizontalAlign.Center,
+                    TextVerticalAlign = WidgetProperties.VerticalAlign.Center,
                     TextSize = 2
                 }));
 
@@ -67,7 +66,6 @@ namespace GemGuiTest
                 new GemGui.WidgetProperties()
                 {
                     Text = "OPTION TWO",
-                    BackgroundColor = new Vector4(1, 0, 0, 1),
                     Border = "thin",
                     OnClick = (args) => { frame.Properties.Text = "Clicked Two"; frame.Invalidate(); },
                     TextHorizontalAlign = WidgetProperties.HorizontalAlign.Center,
@@ -80,7 +78,6 @@ namespace GemGuiTest
                 new GemGui.WidgetProperties()
                 {
                     Text = "Open Dialog",
-                    BackgroundColor = new Vector4(1, 0, 0, 1),
                     Border = "thin",
                     OnClick = (args) => 
                     {
@@ -89,8 +86,8 @@ namespace GemGuiTest
                             new WidgetProperties() {});
                         GuiRoot.ShowDialog(dialog);
                     },
-                    TextHorizontalAlign = WidgetProperties.HorizontalAlign.Right,
-                    TextVerticalAlign = WidgetProperties.VerticalAlign.Bottom,
+                    TextHorizontalAlign = WidgetProperties.HorizontalAlign.Center,
+                    TextVerticalAlign = WidgetProperties.VerticalAlign.Center,
                     TextSize = 2
                 }));
         }

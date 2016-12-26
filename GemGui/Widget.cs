@@ -33,7 +33,7 @@ namespace GemGui
 
         public Widget FindWidgetAt(int x, int y)
         {
-            foreach (var child in Children)
+            foreach (var child in Children.Reverse<Widget>())
             {
                 var item = child.FindWidgetAt(x, y);
                 if (item != null) return item;

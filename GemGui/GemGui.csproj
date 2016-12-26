@@ -80,6 +80,7 @@
     <Compile Include="Layouts\RectangleExtension.cs" />
     <Compile Include="MouseEventArgs.cs" />
     <Compile Include="Root.cs" />
+    <Compile Include="TextFieldLogic.cs" />
     <Compile Include="TextureAtlasCompiler.cs" />
     <Compile Include="Widget.cs" />
     <Compile Include="WidgetProperties.cs" />

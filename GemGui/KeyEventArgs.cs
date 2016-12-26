@@ -19,7 +19,6 @@ namespace GemGui
         public bool Control;
         public bool Shift;
 
-        public int KeyData;
         public int KeyValue;
     }
 }

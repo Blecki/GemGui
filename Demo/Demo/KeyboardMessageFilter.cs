@@ -20,7 +20,7 @@ namespace GemGuiTest
 
         public bool PreFilterMessage(ref Message m)
         {
-            if (m.Msg == WM_KEYUP)
+            if (m.Msg == WM_KEYDOWN)
                 TranslateMessage(ref m);
                 
             if (m.Msg == WM_KEYDOWN || m.Msg == WM_KEYUP || m.Msg == WM_CHAR)

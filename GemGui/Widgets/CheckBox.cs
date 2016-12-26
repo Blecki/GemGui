@@ -19,6 +19,7 @@ namespace GemGui.Widgets
         internal override void OnConstruct()
         {
             Properties.OnClick += (args) => { CheckState = !CheckState; };
+            Properties.TextVerticalAlign = WidgetProperties.VerticalAlign.Center;
         }
 
         public override Rectangle GetDrawableInterior()

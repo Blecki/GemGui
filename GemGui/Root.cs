@@ -25,12 +25,27 @@ namespace GemGui
         public Widget FocusItem { get; private set; }
 
         public Rectangle VirtualScreen { get; private set; }
+        public Rectangle RealScreen { get; private set; }
+        public int ScaleRatio { get; private set; }
         public GemGui.Widget RootItem { get; private set; }
 
         public Root(GraphicsDevice Device, Rectangle VirtualScreen, ContentManager TextureSource, String Effect, String Skin)
         {
             this.Device = Device;
             this.VirtualScreen = VirtualScreen;
+
+            // Calculate ideal on screen size.
+            var screenSize = Device.Viewport.Bounds;
+            var scaleFactor = 0;
+
+            while (((VirtualScreen.Width * (scaleFactor + 1)) <= screenSize.Width) &&
+                ((VirtualScreen.Height * (scaleFactor + 1)) <= screenSize.Height))
+                scaleFactor += 1;
+
+            RealScreen = Layout.Center(new Rectangle(0, 0, VirtualScreen.Width * scaleFactor, VirtualScreen.Height * scaleFactor),
+                screenSize);
+
+            ScaleRatio = scaleFactor;
 
             this.Effect = TextureSource.Load<Effect>(Effect);
 
@@ -167,16 +182,15 @@ namespace GemGui
         public void HandleMouse(MouseState State)
         {
             // Transform mouse from screen space to virtual gui space.
-            var mouseVector = new Vector2(State.X, State.Y);
-            mouseVector.X /= Device.Viewport.Width;
-            mouseVector.Y /= Device.Viewport.Height;
-            mouseVector.X *= VirtualScreen.Width;
-            mouseVector.Y *= VirtualScreen.Height;
+            float mouseX = State.X - RealScreen.X;
+            float mouseY = State.Y - RealScreen.Y;
+            mouseX /= ScaleRatio;
+            mouseY /= ScaleRatio;
 
-            var eventArgs = new MouseEventArgs { X = (int)mouseVector.X, Y = (int)mouseVector.Y };
+            var eventArgs = new MouseEventArgs { X = (int)mouseX, Y = (int)mouseY };
 
             // Detect hover item and fire mouse enter/leave events as appropriate.
-            var newHoverItem = RootItem.FindWidgetAt((int)mouseVector.X, (int)mouseVector.Y);
+            var newHoverItem = RootItem.FindWidgetAt((int)mouseX, (int)mouseY);
             if (!Object.ReferenceEquals(newHoverItem, HoverItem))
             {
                 if (HoverItem != null) SafeCall(HoverItem.Properties.OnMouseLeave, eventArgs);
@@ -228,12 +242,18 @@ namespace GemGui
 
             Effect.Parameters["View"].SetValue(Matrix.Identity);
             
-            // Add 0.5f to the viewport because XNA is broken. Remove this offset if using Monogame.
             Effect.Parameters["Projection"].SetValue(
-                Matrix.CreateOrthographicOffCenter(0 + 0.5f, VirtualScreen.Width + 0.5f, 
-                VirtualScreen.Height + 0.5f, 0 + 0.5f, -32, 32));
+                Matrix.CreateOrthographicOffCenter(0, Device.Viewport.Width, 
+                Device.Viewport.Height, 0, -32, 32));
 
-            Effect.Parameters["World"].SetValue(Matrix.Identity);
+            var scale = RealScreen.Width / VirtualScreen.Width;
+
+            // Need to offset by the subpixel portion to avoid screen artifacts.
+            // Remove this offset is porting to Monogame, monogame does it correctly.
+            Effect.Parameters["World"].SetValue(
+                Matrix.CreateTranslation(RealScreen.X, RealScreen.Y, 1.0f)
+                * Matrix.CreateScale(scale)
+                * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f));
             Effect.Parameters["Texture"].SetValue(GuiTexture);
 
             Effect.CurrentTechnique.Passes[0].Apply();

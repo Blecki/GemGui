@@ -12,7 +12,7 @@ namespace GemGui.Demo
         internal override void OnConstruct()
         {
             //Set size and center on screen.
-            Rect = Layout.Center(new Rectangle(0, 0, 512, 512), Root.VirtualScreen);
+            Rect = Root.VirtualScreen.Interior(16, 16, 16, 16);
 
             Properties.Border = "fancy-border";
             Properties.Transparent = false;
@@ -47,7 +47,8 @@ namespace GemGui.Demo
                 dockLayout.Position(BorderLayout.Sides.Top, 24),
                 new WidgetProperties
                 {
-                    Text = "edit me"
+                    Text = "edit me",
+                    TextSize = 2
                 }));
 
             AddChild(Root.CreateUIItem<Widgets.CheckBox>(

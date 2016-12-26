@@ -58,7 +58,6 @@ namespace GemGuiTest
                             Message = GemGui.KeyEvents.KeyPress,
                             Args = new GemGui.KeyEventArgs
                             {
-                                KeyData = args.KeyChar,
                                 KeyValue = args.KeyChar,
                                 Alt = false,
                                 Control = false,
@@ -78,8 +77,7 @@ namespace GemGuiTest
                                     Alt = args.Alt,
                                     Control = args.Control,
                                     Shift = args.Shift,
-                                    KeyData = (int)args.KeyData,
-                                    KeyValue = args.KeyValue
+                                    KeyValue = (int)args.KeyCode
                                 }
                             });
                         break;
@@ -95,8 +93,7 @@ namespace GemGuiTest
                                     Alt = args.Alt,
                                     Control = args.Control,
                                     Shift = args.Shift,
-                                    KeyData = (int)args.KeyData,
-                                    KeyValue = args.KeyValue
+                                    KeyValue = (int)args.KeyCode
                                 }
                             });
                         break;
