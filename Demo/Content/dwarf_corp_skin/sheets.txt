@@ -1,0 +1,70 @@
+﻿{
+	"Sheets": [
+		{
+			"Name": "font",
+			"Texture": "Content/dwarf_corp_skin/font",
+			"TileWidth": 6,
+			"TileHeight": 8
+		},
+		{
+			"Name": "mouse",
+			"Texture": "Content/dwarf_corp_skin/pointers",
+			"TileWidth": 16,
+			"TileHeight" : 16
+		},
+		{
+			"Name": "basic",
+			"Texture": "Content/dwarf_corp_skin/basic",
+			"TileWidth": 8,
+			"TileHeight": 8
+		},
+		{
+			"Name": "border-one",
+			"Texture": "Content/dwarf_corp_skin/border",
+			"TileWidth": 16,
+			"TileHeight": 16
+		},
+		{
+			"Name": "border-fancy",
+			"Texture": "Content/dwarf_corp_skin/fancy-border",
+			"TileWidth": 30,
+			"TileHeight": 30
+		},
+		{
+			"Name": "border-button",
+			"Texture": "Content/dwarf_corp_skin/button",
+			"TileWidth": 8,
+			"TileHeight": 8
+		},
+		{
+			"Name": "checkbox",
+			"Texture": "Content/dwarf_corp_skin/checkbox",
+			"TileWidth": 18,
+			"TileHeight": 18
+		},
+		{
+			"Name": "radiobutton",
+			"Texture": "Content/dwarf_corp_skin/radiobutton",
+			"TileWidth": 18,
+			"TileHeight": 18
+		},
+		{
+			"Name": "border-thin",
+			"Texture": "Content/dwarf_corp_skin/thin",
+			"TileWidth": 2,
+			"TileHeight": 2
+		},
+		{
+			"Name": "vertical-scrollbar",
+			"Texture": "Content/dwarf_corp_skin/vertical-scrollbar",
+			"TileWidth": 24,
+			"TileHeight": 24
+		},
+		{
+			"Name": "combo-down",
+			"Texture": "Content/dwarf_corp_skin/down",
+			"TileWidth": 16,
+			"TileHeight": 16
+		}
+	]
+}

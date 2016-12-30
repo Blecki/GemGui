@@ -1,0 +1,18 @@
+2.50	12/23 - Put together basis of framework; building widgets into meshes and caching them; etc.
+2.00	12/24 - TileSheet spec and implementation; compiling used textures into a single atlas; text string mesh building.
+				- Notes: Didn't implement the color encoding scheme from DwarfCorp. Need to see how this is used before implementing.
+4.00	12/25 - Wrote simple dialog test; checkbox; backported to XNA; Keyboard handling in GUI; Keyboard hook for demo -
+				- Notes: Existing keyboard handling in DwarfCorp appears to use XNA's KeyBoardState and will drop keyevents
+				with impaired framerate. It is also using some kind of massive switch for handling shift?? This should be
+				replaced.
+0.75	12/26 - Ditched property implementation (Inheritance was only appropriate for 2 properties anyway)
+1.00			Vertical Scrollbar rendering.
+1.00			Vertical Scrollbar click logic.
+2.00			ListView control - scrollbar, list of items, rendering properly.
+				Rewrote layout system. Slightly better; widgets are starting to feel more bloated. Have to remember that extra work
+				at construction time is no big deal, as long as they remain lean on runtime logic.
+0.50			ListView OnClick handler - select items in the list.
+0.50	12/27 - Combo box behavior
+				- Notes: Need a 'popup' style widget to handle automatically closing the combo box pulldown when the screen is 
+				clicked somewhere else.
+1.50			Ported to monogame
