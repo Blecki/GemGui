@@ -40,6 +40,7 @@ namespace Gum.Widgets
         }
 
         private VerticalScrollBar ScrollBar;
+        public int ItemHeight { get { return (Root.GetTileSheet(Font).TileHeight * TextSize) + 2; } }
 
         public override void Construct()
         {
@@ -52,16 +53,7 @@ namespace Gum.Widgets
 
             OnClick += (args) =>
                 {
-                    // Todo - Clean this up
-                    var font = Root.GetTileSheet(Font);
-                    var itemHeight = (font.TileHeight * TextSize) + 2;
-                    var drawableInterior = GetDrawableInterior();
-                    var itemsThatFit = drawableInterior.Height / itemHeight;
-                    var topItem = ScrollBar.ScrollPosition;
-
-                    var clickY = args.Y - drawableInterior.Y;
-                    var clickItem = topItem + (clickY / itemHeight);
-                    SelectedIndex = clickItem;
+                    SelectedIndex = ScrollBar.ScrollPosition + ((args.Y - GetDrawableInterior().Y) / ItemHeight);
                 };
         }
 

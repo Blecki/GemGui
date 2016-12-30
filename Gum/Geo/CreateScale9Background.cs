@@ -15,16 +15,15 @@ namespace Gum
 
             //Top-left corner
             result.Add(CreateSpriteQuad()
-                .Transform(Matrix.CreateScale(Tiles.TileWidth, Tiles.TileHeight, 1.0f))
-                .Texture(Tiles.TileMatrix(0))
-                .Transform(Matrix.CreateTranslation(Rect.X, Rect.Y, 0.0f)));
+                .Tile(Tiles, 0)
+                .Translate(Rect.X, Rect.Y));
 
             //Top-right corner
             result.Add(CreateSpriteQuad()
-                .Transform(Matrix.CreateScale(Tiles.TileWidth, Tiles.TileHeight, 1.0f))
-                .Texture(Tiles.TileMatrix(2))
-                .Transform(Matrix.CreateTranslation(Rect.X + Rect.Width - Tiles.TileWidth, Rect.Y, 0.0f)));
+                .Tile(Tiles, 2)
+                .Translate(Rect.X + Rect.Width - Tiles.TileWidth, Rect.Y));
 
+            // Todo: Cleanup as above.
             //Bottom-left corner
             result.Add(CreateSpriteQuad()
                 .Transform(Matrix.CreateScale(Tiles.TileWidth, Tiles.TileHeight, 1.0f))

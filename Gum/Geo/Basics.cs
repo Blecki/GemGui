@@ -34,6 +34,7 @@ namespace Gum
             return this;
         }
 
+        // Todo: Replace calls to this with calls to scale and translate if possible.
         public Mesh Transform(Matrix m)
         {
             return Transform(m, 0, verticies.Length);

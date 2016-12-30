@@ -45,6 +45,7 @@ namespace Gum.Widgets
 
             OnGainFocus += () => this.Invalidate();
             OnLoseFocus += () => this.Invalidate();
+            OnUpdateWhileFocus += () => this.Invalidate();
 
             OnKeyPress += (args) =>
                 {
@@ -62,28 +63,25 @@ namespace Gum.Widgets
 
         protected override Mesh Redraw()
         {
-            var mesh = base.Redraw();
-
             if (Object.ReferenceEquals(this, Root.FocusItem))
             {
-                var font = Root.GetTileSheet(Font);
-                var drawableArea = this.GetDrawableInterior();
-                var cursorMesh = Mesh.CreateSpriteQuad();
-
-                cursorMesh.Transform(Matrix.CreateScale(2.0f * TextSize, font.TileHeight * 1.2f * TextSize, 1.0f));
-                // Center cursor in vertical space.
-                cursorMesh.Transform(Matrix.CreateTranslation(
-                    drawableArea.X + (CursorPosition * font.TileWidth * TextSize) - (TextSize / 2),
-                    drawableArea.Y + ((drawableArea.Height - font.TileHeight * 1.2f * TextSize) / 2),
-                    0.0f));
-
-                // Todo: Find or make an actual cursor sprite.
-                cursorMesh.Texture(Root.GetTileSheet("basic").TileMatrix(0));
-                cursorMesh.Colorize(new Vector4(1, 0, 0, 1));
-                mesh = Mesh.Merge(mesh, cursorMesh);
+                var cursorTime = (int)(Math.Floor(Root.RunTime / Root.CursorBlinkTime));
+                if ((cursorTime & 1) == 1)
+                {
+                    var font = Root.GetTileSheet(Font);
+                    var drawableArea = this.GetDrawableInterior();
+                    var cursorMesh = Mesh.CreateSpriteQuad()
+                        .Scale(font.TileWidth * TextSize, font.TileHeight * TextSize)
+                        .Translate(
+                            drawableArea.X + (CursorPosition * font.TileWidth * TextSize) - ((font.TileWidth * TextSize) / 2),
+                            drawableArea.Y + ((drawableArea.Height - (font.TileHeight * TextSize)) / 2))
+                        .Texture(Root.GetTileSheet(Font).TileMatrix((int)('|' - ' ')))
+                        .Colorize(new Vector4(1, 0, 0, 1));
+                    return Mesh.Merge(base.Redraw(), cursorMesh);
+                }
             }
-
-            return mesh;
+            
+            return base.Redraw();
         }
     }
 }

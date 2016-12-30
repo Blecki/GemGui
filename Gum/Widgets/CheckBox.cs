@@ -46,9 +46,16 @@ namespace Gum.Widgets
 
         public override Point GetBestSize()
         {
-            // Todo: Account for text.
+            var size = new Point(0, 0);
+            if (!String.IsNullOrEmpty(Text))
+            {
+                var font = Root.GetTileSheet(Font);
+                size = new Point(font.TileWidth * TextSize * Text.Length,
+                    font.TileHeight * TextSize);
+            }
+
             var gfx = Root.GetTileSheet(Graphics);
-            return new Point(gfx.TileWidth, gfx.TileHeight);
+            return new Point(gfx.TileWidth + size.X, Math.Max(gfx.TileHeight, size.Y));
         }
     }
 }

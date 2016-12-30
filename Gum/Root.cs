@@ -41,6 +41,8 @@ namespace Gum
         public float SecondsBeforeTooltip = 1.0f;
         public String TooltipFont = null;
         public int TooltipTextSize = 1;
+        public float CursorBlinkTime = 0.3f;
+        internal double RunTime = 0.0f;
 
         public Root(GraphicsDevice Device, Rectangle VirtualScreen, ContentManager TextureSource, String Effect, String Skin)
         {
@@ -292,6 +294,10 @@ namespace Gum
                 if (hoverTime.TotalSeconds > SecondsBeforeTooltip)
                     ShowTooltip(MousePosition, HoverItem.Tooltip);
             }
+
+            RunTime = Time.TotalGameTime.TotalSeconds;
+
+            if (FocusItem != null) SafeCall(FocusItem.OnUpdateWhileFocus);
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ namespace Gum.Widgets
     public class ComboBox : Widget
     {
         public List<String> Items = new List<String>();
+        public int ItemsVisibleInPopup = 6;
 
         private int _selectedIndex = 1;
         public int SelectedIndex
@@ -66,9 +67,12 @@ namespace Gum.Widgets
                                     Border = "border-thin"
                                 }) as ListView;
 
-                            //Todo: Size listview to set number of visible items.
                             listView.Items.AddRange(Items);
                             listView.SelectedIndex = SelectedIndex;
+
+                            // Find out how much 'border space' the listview is using.
+                            var bufferHeight = childRect.Height - listView.GetDrawableInterior().Height;
+                            listView.Rect.Height = bufferHeight + listView.ItemHeight * ItemsVisibleInPopup;
                             listView.Layout();
 
                             listView.OnSelectedIndexChanged += () =>

@@ -86,6 +86,7 @@ namespace Gum
         public Action<InputEventArgs> OnKeyDown = null;
         public Action<InputEventArgs> OnKeyUp = null;
         public Action OnPopupClose = null;
+        public Action OnUpdateWhileFocus = null;
 
         private Mesh CachedRenderMesh = null;
 
