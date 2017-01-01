@@ -33,7 +33,7 @@ namespace GemGuiTest
         {
             GuiRoot = new Gum.Root(
                 GraphicsDevice,
-                new Rectangle(0, 0, 640, 480),
+                new Point(640, 480),
                 this.Content,
                 String.Format("Content/{0}_draw", Lib),
                 "Content/dwarf_corp_skin/sheets.txt");
@@ -46,44 +46,73 @@ namespace GemGuiTest
             var frame = GuiRoot.RootItem.AddChild(
                 GuiRoot.CreateWidget(new Widget
                 {
-                    Rect = new Rectangle(0,0,256,256),
                     Text = "- DEMO MENU -",
                     Border = "border-one",
                     TextSize = 2,
-                    TextHorizontalAlign = HorizontalAlign.Center
+                    TextHorizontalAlign = HorizontalAlign.Center,
+                    MinimumSize = new Point(256,256),
+                    AutoLayout = AutoLayout.FloatCenter,
+                    TopMargin = GuiRoot.GetTileSheet("font").TileHeight * 2
                 }));
-            Layout.Center(frame, GuiRoot.VirtualScreen);
-
-            var dock = new DockLayout(frame.GetDrawableInterior().Interior(0, 24, 0, 0), 2);
-
-            dock.Dock(frame.AddChild(GuiRoot.CreateWidget(new Widget
+            
+            frame.AddChild(GuiRoot.CreateWidget(new Widget
             {
                 Text = "View Atlas",
                 Border = "border-thin",
-                OnClick = (args) =>
+                OnClick = (sender, args) =>
                 {
                     var dialog = GuiRoot.CreateWidget(new ShowTextureDialog());
                     GuiRoot.ShowDialog(dialog);
+                    GuiRoot.RootItem.Layout();
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2
-            })), DockLayout.Sides.Top);
+                TextSize = 2,
+                AutoLayout = AutoLayout.DockTop
+            }));
 
-            dock.Dock(frame.AddChild(GuiRoot.CreateWidget(new Widget
+            frame.AddChild(GuiRoot.CreateWidget(new Widget
             {
                 Text = "View Demo Pane",
                 Border = "border-thin",
-                OnClick = (args) =>
+                OnClick = (sender, args) =>
                 {
                     var dialog = GuiRoot.CreateWidget(new DemoDialog());
                     GuiRoot.ShowDialog(dialog);
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2
-            })), DockLayout.Sides.Top);
-                        
+                TextSize = 2,
+                AutoLayout = AutoLayout.DockTop
+            }));
+
+            frame.AddChild(GuiRoot.CreateWidget(new Widget
+            {
+                Text = "Toggle Alignment",
+                Border = "border-thin",
+                OnClick = (sender, args) =>
+                {
+                    if (frame.AutoLayout == AutoLayout.FloatTopRight)
+                        frame.AutoLayout = AutoLayout.FloatBottomRight;
+                    else if (frame.AutoLayout == AutoLayout.FloatBottomRight)
+                        frame.AutoLayout = AutoLayout.FloatBottomLeft;
+                    else if (frame.AutoLayout == AutoLayout.FloatBottomLeft)
+                        frame.AutoLayout = AutoLayout.FloatTopLeft;
+                    else if (frame.AutoLayout == AutoLayout.FloatTopLeft)
+                        frame.AutoLayout = AutoLayout.FloatTopRight;
+                    else
+                        frame.AutoLayout = AutoLayout.FloatTopLeft;
+                    GuiRoot.RootItem.Layout();
+                    sender.Invalidate();
+
+                },
+                TextHorizontalAlign = HorizontalAlign.Center,
+                TextVerticalAlign = VerticalAlign.Center,
+                TextSize = 2,
+                AutoLayout = AutoLayout.DockTop
+            }));
+
+            GuiRoot.RootItem.Layout();         
         }
 
         protected override void UnloadContent()

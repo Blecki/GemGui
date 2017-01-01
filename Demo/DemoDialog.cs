@@ -17,82 +17,90 @@ namespace GemGuiTest
 
             Border = "border-fancy";
 
-            // Because the dialog is never resized, we can just position items here instead of implementing Layout().
-            var dockLayout = new DockLayout(GetDrawableInterior(), 2);
-
             // Create a close button in the bottom right.
-            dockLayout.Float(AddChild(Root.CreateWidget(new Widget
+            AddChild(Root.CreateWidget(new Widget
             {
                 Text = "CLOSE",
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
                 Border = "border-button",
                 TextSize = 2,
-                OnClick = (args) => this.Close()
-            })), DockLayout.Sides.Bottom, DockLayout.Sides.Right);
+                OnClick = (sender, args) => this.Close(),
+                AutoLayout = AutoLayout.FloatBottomRight
+            }));
 
-            dockLayout.Dock(AddChild(Root.CreateWidget(new Gum.Widgets.EditableTextField
+            AddChild(Root.CreateWidget(new Gum.Widgets.EditableTextField
             {
-                Text = "edit me"
-            })), DockLayout.Sides.Top);
+                Text = "edit me",
+                AutoLayout = AutoLayout.DockTop
+            }));
 
-            dockLayout.Dock(AddChild(Root.CreateWidget(new Gum.Widgets.EditableTextField
+            AddChild(Root.CreateWidget(new Gum.Widgets.EditableTextField
             {
                 Text = "edit me too",
-                TextSize = 2
-            })), DockLayout.Sides.Top);
+                TextSize = 2,
+                AutoLayout = AutoLayout.DockTop
+            }));
 
-            dockLayout.Dock(AddChild(Root.CreateWidget(new Gum.Widgets.CheckBox
+            AddChild(Root.CreateWidget(new Gum.Widgets.CheckBox
             {
                 Text = "CHECKBOX!",
-                TextSize = 2
-            })), DockLayout.Sides.Top);
+                TextSize = 2,
+                AutoLayout = AutoLayout.DockTop
+            }));
 
-            dockLayout.Dock(AddChild(Root.CreateWidget(new Gum.Widgets.CheckBox
+            AddChild(Root.CreateWidget(new Gum.Widgets.CheckBox
             {
                 Text = "RADIO BUTTON!",
                 Graphics = "radiobutton",
-                TextSize = 2
-            })), DockLayout.Sides.Top);
-                        
-            var listView = dockLayout.Dock(AddChild(Root.CreateWidget(new Gum.Widgets.ListView
-                {
-                    Rect = new Rectangle(0, 0, 256, 256),
-                    TextSize = 2
-                })), DockLayout.Sides.Left) as Gum.Widgets.ListView;
+                TextSize = 2,
+                AutoLayout = AutoLayout.DockTop
+            }));
+
+            var listView = AddChild(Root.CreateWidget(new Gum.Widgets.ListView
+            {
+                Rect = new Rectangle(0, 0, 256, 256),
+                TextSize = 2,
+                AutoLayout = AutoLayout.DockLeft
+            })) as Gum.Widgets.ListView;
             for (int i = 0; i < 40; ++i)
                 listView.Items.Add(String.Format("Item number {0}", i));
             listView.SelectedIndex = 10;
 
 
-            var comboBox = dockLayout.Dock(AddChild(Root.CreateWidget(new Gum.Widgets.ComboBox
-                {
-                    TextSize = 2
-                })), DockLayout.Sides.Top) as Gum.Widgets.ComboBox;
+            var comboBox = AddChild(Root.CreateWidget(new Gum.Widgets.ComboBox
+            {
+                TextSize = 2,
+                AutoLayout = AutoLayout.DockTop
+            })) as Gum.Widgets.ComboBox;
             for (int i = 0; i < 40; ++i)
                 comboBox.Items.Add(String.Format("Combo number {0}", i));
             comboBox.SelectedIndex = 10;
 
-            var normalMouseButton = dockLayout.Dock(AddChild(Root.CreateWidget(new Widget
+            var normalMouseButton = AddChild(Root.CreateWidget(new Widget
             {
                 Background = new TileReference("mouse", 0),
-                OnClick = (args) => { Root.MousePointer = new MousePointer("mouse", 1.0f, 0); },
+                OnClick = (sender, args) => { Root.MousePointer = new MousePointer("mouse", 1.0f, 0); },
                 MinimumSize = new Point(Root.GetTileSheet("mouse").TileWidth, Root.GetTileSheet("mouse").TileHeight),
-                Tooltip = "Click to switch to arrow"
-            })), DockLayout.Sides.Top);
-            normalMouseButton.Rect.Width = Root.GetTileSheet("mouse").TileWidth;
+                MaximumSize = new Point(Root.GetTileSheet("mouse").TileWidth, Root.GetTileSheet("mouse").TileHeight),
+                Tooltip = "Click to switch to arrow",
+                AutoLayout = AutoLayout.DockTop
+            }));
 
-            var hourglassMouseButton = dockLayout.Dock(AddChild(Root.CreateWidget(new Widget
+            var hourglassMouseButton = AddChild(Root.CreateWidget(new Widget
             {
                 Background = new TileReference("mouse", 14),
-                OnClick = (args) => 
-                { 
-                    Root.MousePointer = new MousePointer("mouse", 4.0f, 14, 15, 16, 17, 18, 19); 
+                OnClick = (sender, args) =>
+                {
+                    Root.MousePointer = new MousePointer("mouse", 4.0f, 14, 15, 16, 17, 18, 19);
                 },
                 MinimumSize = new Point(Root.GetTileSheet("mouse").TileWidth, Root.GetTileSheet("mouse").TileHeight),
-                Tooltip = "Click to switch to hourglass"
-            })), DockLayout.Sides.Top);
-            hourglassMouseButton.Rect.Width = Root.GetTileSheet("mouse").TileWidth;
+                MaximumSize = new Point(Root.GetTileSheet("mouse").TileWidth, Root.GetTileSheet("mouse").TileHeight),
+                Tooltip = "Click to switch to hourglass",
+                AutoLayout = AutoLayout.DockTop
+            }));
+
+            Layout();
         }
     }
 }

@@ -21,12 +21,12 @@ namespace Gum.Widgets
             { 
                 _selectedIndex = value; 
                 if (Root != null) 
-                    Root.SafeCall(OnSelectedIndexChanged);
+                    Root.SafeCall(OnSelectedIndexChanged, this);
                 Invalidate();
             }
         }
 
-        public Action OnSelectedIndexChanged = null;
+        public Action<Widget> OnSelectedIndexChanged = null;
         public Vector4 SelectedTextColor = new Vector4(1, 0, 0, 1);
 
         public String SelectedItem
@@ -47,20 +47,15 @@ namespace Gum.Widgets
             if (String.IsNullOrEmpty(Border)) Border = "border-one";
             ScrollBar = new VerticalScrollBar
             {
-                OnScroll = () => { this.Invalidate(); }
+                OnScroll = (sender) => { this.Invalidate(); },
+                AutoLayout = AutoLayout.DockRight
             };
             AddChild(Root.CreateWidget(ScrollBar));
 
-            OnClick += (args) =>
+            OnClick += (sender, args) =>
                 {
                     SelectedIndex = ScrollBar.ScrollPosition + ((args.Y - GetDrawableInterior().Y) / ItemHeight);
                 };
-        }
-
-        public override void Layout()
-        {
-            var dock = new DockLayout(this.GetDrawableInterior(), 0);
-            dock.Dock(ScrollBar, DockLayout.Sides.Right);
         }
 
         public override Point GetBestSize()

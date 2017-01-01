@@ -20,7 +20,7 @@ namespace Gum.Widgets
             TextVerticalAlign = VerticalAlign.Center;
             TextHorizontalAlign = HorizontalAlign.Left;
 
-            OnClick += (args) =>
+            OnClick += (sender, args) =>
                 {
                     if (Object.ReferenceEquals(this, Root.FocusItem))
                     {
@@ -43,18 +43,18 @@ namespace Gum.Widgets
                     }
                 };
 
-            OnGainFocus += () => this.Invalidate();
-            OnLoseFocus += () => this.Invalidate();
-            OnUpdateWhileFocus += () => this.Invalidate();
+            OnGainFocus += (sender) => this.Invalidate();
+            OnLoseFocus += (sender) => this.Invalidate();
+            OnUpdateWhileFocus += (sender) => this.Invalidate();
 
-            OnKeyPress += (args) =>
+            OnKeyPress += (sender, args) =>
                 {
                     // Actual logic of modifying the string is outsourced.
                     Text = TextFieldLogic.Process(Text, CursorPosition, args.KeyValue, out CursorPosition);
                     Invalidate();
                 };
 
-            OnKeyDown += (args) =>
+            OnKeyDown += (sender, args) =>
                 {
                     Text = TextFieldLogic.HandleSpecialKeys(Text, CursorPosition, args.KeyValue, out CursorPosition);
                     Invalidate();

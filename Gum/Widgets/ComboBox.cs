@@ -25,13 +25,13 @@ namespace Gum.Widgets
                     Text = Items[_selectedIndex];
 
                 if (Root != null)
-                    Root.SafeCall(OnSelectedIndexChanged);
+                    Root.SafeCall(OnSelectedIndexChanged, this);
 
                 Invalidate();
             }
         }
 
-        public Action OnSelectedIndexChanged = null;
+        public Action<Widget> OnSelectedIndexChanged = null;
 
         public String SelectedItem
         {
@@ -49,7 +49,7 @@ namespace Gum.Widgets
         {
             if (String.IsNullOrEmpty(Graphics)) Graphics = "combo-down";
 
-            OnClick += (args) =>
+            OnClick += (sender, args) =>
                 {
                     var interior = GetDrawableInterior();
                     var clickX = args.X - interior.X - interior.Width;
@@ -75,7 +75,7 @@ namespace Gum.Widgets
                             listView.Rect.Height = bufferHeight + listView.ItemHeight * ItemsVisibleInPopup;
                             listView.Layout();
 
-                            listView.OnSelectedIndexChanged += () =>
+                            listView.OnSelectedIndexChanged += (_sender) =>
                                 {
                                     if (SelectorPopup != null)
                                     {
@@ -86,7 +86,7 @@ namespace Gum.Widgets
                                     }
                                 };
 
-                            listView.OnPopupClose += () =>
+                            listView.OnPopupClose += (_sender) =>
                                 {
                                     SelectorPopup = null;
                                 };

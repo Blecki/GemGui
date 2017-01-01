@@ -42,6 +42,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Layout.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="Geo\Basics.cs" />
     <Compile Include="Geo\CreateQuad.cs" />
     <Compile Include="Geo\CreateScale9Background.cs" />
@@ -51,11 +53,9 @@
     <Compile Include="HelperExtensions.cs" />
     <Compile Include="JsonTileSheet.cs" />
     <Compile Include="KeyEventArgs.cs" />
-    <Compile Include="Layout\DockLayout.cs" />
-    <Compile Include="Layout\Layout.cs" />
-    <Compile Include="Layout\RectangleExtension.cs" />
     <Compile Include="MousePointer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RectangleExtension.cs" />
     <Compile Include="Root.cs" />
     <Compile Include="TextFieldLogic.cs" />
     <Compile Include="TextureAtlasCompiler.cs" />

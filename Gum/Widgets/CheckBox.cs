@@ -18,7 +18,7 @@ namespace Gum.Widgets
 
         public override void Construct()
         {
-            OnClick += (args) => { CheckState = !CheckState; };
+            OnClick += (sender, args) => { CheckState = !CheckState; };
             TextVerticalAlign = VerticalAlign.Center;
 
             if (String.IsNullOrEmpty(Graphics))

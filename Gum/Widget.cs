@@ -5,27 +5,19 @@ using System.Linq;
 
 namespace Gum
 {
-    public enum HorizontalAlign
-    {
-        Left,
-        Right,
-        Center
-    }
-
-    public enum VerticalAlign
-    {
-        Top,
-        Bottom,
-        Center
-    }
-
     /// <summary>
     /// An individual element in the GUI.
     /// </summary>
-    public class Widget
+    public partial class Widget
     {
         public Rectangle Rect = new Rectangle(0, 0, 0, 0);
+
         public Point MinimumSize = new Point(0, 0);
+        public Point MaximumSize = new Point(int.MaxValue, int.MaxValue);
+        public AutoLayout AutoLayout = AutoLayout.None;
+        public int Padding = 2;
+        public int TopMargin = 0;
+
         internal List<Widget> Children = new List<Widget>();
         public Widget Parent { get; private set; }
         public Root Root { get; internal set; }
@@ -77,18 +69,20 @@ namespace Gum
         public VerticalAlign TextVerticalAlign = VerticalAlign.Top;
         public int TextSize = 1; // Todo: Floating point text size?
         public String Tooltip = null;
-        public Action<InputEventArgs> OnMouseEnter = null;
-        public Action<InputEventArgs> OnMouseLeave = null;
-        public Action<InputEventArgs> OnClick = null;
-        public Action OnGainFocus = null;
-        public Action OnLoseFocus = null;
-        public Action<InputEventArgs> OnKeyPress = null;
-        public Action<InputEventArgs> OnKeyDown = null;
-        public Action<InputEventArgs> OnKeyUp = null;
-        public Action OnPopupClose = null;
-        public Action OnUpdateWhileFocus = null;
+        public Action<Widget, InputEventArgs> OnMouseEnter = null;
+        public Action<Widget, InputEventArgs> OnMouseLeave = null;
+        public Action<Widget, InputEventArgs> OnClick = null;
+        public Action<Widget> OnGainFocus = null;
+        public Action<Widget> OnLoseFocus = null;
+        public Action<Widget, InputEventArgs> OnKeyPress = null;
+        public Action<Widget, InputEventArgs> OnKeyDown = null;
+        public Action<Widget, InputEventArgs> OnKeyUp = null;
+        public Action<Widget> OnPopupClose = null;
+        public Action<Widget> OnUpdateWhileFocus = null;
 
         private Mesh CachedRenderMesh = null;
+
+        
 
         public Widget() { }
 
@@ -99,11 +93,6 @@ namespace Gum
         }
 
         public virtual void Construct() { }
-
-        /// <summary>
-        /// Called when a layout repositions the items and needs it to re-layout it's children.
-        /// </summary>
-        public virtual void Layout() { }
 
         public Widget FindWidgetAt(int x, int y)
         {
@@ -160,14 +149,16 @@ namespace Gum
 
         public virtual Rectangle GetDrawableInterior()
         {
-            if (String.IsNullOrEmpty(Border)) return Rect;
-            else
+            if (!String.IsNullOrEmpty(Border))
             {
                 var tileSheet = Root.GetTileSheet(Border);
-                return Rect.Interior(tileSheet.TileWidth, tileSheet.TileHeight, tileSheet.TileWidth, tileSheet.TileHeight);
+                return Rect.Interior(tileSheet.TileWidth, tileSheet.TileHeight,
+                    tileSheet.TileWidth, tileSheet.TileHeight);
             }
+            else
+                return Rect;
         }
-
+        
         public virtual Point GetBestSize()
         {
             var size = new Point(0, 0);
@@ -185,8 +176,7 @@ namespace Gum
                     size.Y + border.TileHeight + border.TileHeight);
             }
 
-            // Todo: Respect this settings in all widgets BestSize.
-            return size.Atleast(MinimumSize);
+            return size;
         }
 
         protected virtual Mesh Redraw()

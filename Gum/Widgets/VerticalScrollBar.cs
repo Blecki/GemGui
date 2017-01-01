@@ -28,7 +28,7 @@ namespace Gum.Widgets
             set { _scrollPosition = (int)(_scrollArea * value); AfterScroll(); }
         }
 
-        public Action OnScroll = null;
+        public Action<Widget> OnScroll = null;
 
         private void AfterScroll()
         {
@@ -38,14 +38,14 @@ namespace Gum.Widgets
             Invalidate();
 
             // Could be called during construction - before Root is set.
-            if (Root != null) Root.SafeCall(OnScroll);
+            if (Root != null) Root.SafeCall(OnScroll, this);
         }
 
         public override void Construct()
         {
             if (String.IsNullOrEmpty(Graphics)) Graphics = "vertical-scrollbar";
 
-            OnClick += (args) =>
+            OnClick += (sender, args) =>
                 {
                     var gfx = Root.GetTileSheet(Graphics);
                     var scrollSize = Rect.Height - gfx.TileHeight - gfx.TileHeight;

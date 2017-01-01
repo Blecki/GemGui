@@ -13,24 +13,22 @@ namespace GemGuiTest
         public override void Construct()
         {
             //Set size and center on screen.
-            Rect = Root.VirtualScreen.Interior(16, 16, 16, 16);
+            Rect = new Rectangle(0, 0, Root.GuiTexture.Width + 4, Root.GuiTexture.Height + 4);
+            AutoLayout = AutoLayout.FloatCenter;
+            MinimumSize = new Point(Rect.Width, Rect.Height);
 
             Border = "border-thin";
 
-            // Create a close button in the bottom right.
-            var internalArea = GetDrawableInterior();
-            var dockLayout = new DockLayout(internalArea, 2);
-
-            dockLayout.Float(AddChild(Root.CreateWidget(new Widget
+            AddChild(Root.CreateWidget(new Widget
             {
                 Text = "CLOSE",
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
                 Border = "border-button",
                 TextSize = 2,
-                OnClick = (args) => this.Close()
-            })), DockLayout.Sides.Bottom, DockLayout.Sides.Right);
-   
+                OnClick = (sender, args) => this.Close(),
+                AutoLayout = AutoLayout.FloatBottomRight
+            }));
         }
 
         protected override Mesh Redraw()

@@ -15,12 +15,9 @@ namespace Gum
     /// </summary>
     public class Root
     {
-        //Todo: Multiple 'virtual screens', with their own root widget. This is to implement the panels of the main
-        // gui that float to the corners as the screen size changes.
-
         private GraphicsDevice Device;
         private Effect Effect;
-        private Texture2D GuiTexture;
+        public Texture2D GuiTexture { get; private set; }
 
         internal Dictionary<String, TileSheet> TileSheets = new Dictionary<String, TileSheet>();
         internal Widget HoverItem;
@@ -44,18 +41,27 @@ namespace Gum
         public float CursorBlinkTime = 0.3f;
         internal double RunTime = 0.0f;
 
-        public Root(GraphicsDevice Device, Rectangle VirtualScreen, ContentManager TextureSource, String Effect, String Skin)
+        public Root(GraphicsDevice Device, Point IdealSize, ContentManager TextureSource, String Effect, String Skin)
         {
             this.Device = Device;
-            this.VirtualScreen = VirtualScreen;
+            this.VirtualScreen = new Rectangle(0,0,IdealSize.X, IdealSize.Y);
 
             // Calculate ideal on screen size.
+            // Size should never be smaller than the size of the virtual screen supplied.
             var screenSize = Device.Viewport.Bounds;
             var scaleFactor = 0;
 
-            while (((VirtualScreen.Width * (scaleFactor + 1)) <= screenSize.Width) &&
-                ((VirtualScreen.Height * (scaleFactor + 1)) <= screenSize.Height))
+            // How many times can we multiply the ideal size and still fit on the screen?
+            while (((IdealSize.X * (scaleFactor + 1)) <= screenSize.Width) &&
+                ((IdealSize.Y * (scaleFactor + 1)) <= screenSize.Height))
                 scaleFactor += 1;
+
+            // How much space did we leave to the left and right? 
+            var horizontalExpansion = ((screenSize.Width - (IdealSize.X * scaleFactor)) / 2) / scaleFactor;
+            var verticalExpansion = ((screenSize.Height - (IdealSize.Y * scaleFactor)) / 2) / scaleFactor;
+
+            VirtualScreen = new Rectangle(0, 0, IdealSize.X + horizontalExpansion + horizontalExpansion,
+                IdealSize.Y + verticalExpansion + verticalExpansion);
 
             RealScreen = new Rectangle(0, 0, VirtualScreen.Width * scaleFactor, VirtualScreen.Height * scaleFactor);
             RealScreen = new Rectangle((screenSize.Width - RealScreen.Width) / 2,
@@ -154,7 +160,7 @@ namespace Gum
         {
             if (PopupItem != null)
             {
-                SafeCall(PopupItem.OnPopupClose);
+                SafeCall(PopupItem.OnPopupClose, PopupItem);
                 DestroyWidget(PopupItem);
             }
 
@@ -191,27 +197,27 @@ namespace Gum
             if (!Object.ReferenceEquals(this, On.Root)) throw new InvalidOperationException();
             if (Object.ReferenceEquals(FocusItem, On)) return;
 
-            if (FocusItem != null) SafeCall(FocusItem.OnLoseFocus);
+            if (FocusItem != null) SafeCall(FocusItem.OnLoseFocus, FocusItem);
             FocusItem = On; 
-            if (FocusItem != null) SafeCall(FocusItem.OnGainFocus);
+            if (FocusItem != null) SafeCall(FocusItem.OnGainFocus, FocusItem);
         }
 
         /// <summary>
         /// Shortcut to call an action without having to check for null.
         /// </summary>
         /// <param name="Action"></param>
-        internal void SafeCall(Action<InputEventArgs> Action, InputEventArgs Args)
+        internal void SafeCall(Action<Widget, InputEventArgs> Action, Widget Widget, InputEventArgs Args)
         {
-            if (Action != null) Action(Args);
+            if (Action != null) Action(Widget, Args);
         }
 
         /// <summary>
         /// Shortcut to call an action without having to check for null.
         /// </summary>
         /// <param name="Action"></param>
-        internal void SafeCall(Action Action)
+        internal void SafeCall(Action<Widget> Action, Widget Widget)
         {
-            if (Action != null) Action();
+            if (Action != null) Action(Widget);
         }
 
         public Point ScreenPointToGuiPoint(Point P)
@@ -244,8 +250,8 @@ namespace Gum
                         var newHoverItem = RootItem.FindWidgetAt(MousePosition.X, MousePosition.Y);
                         if (!Object.ReferenceEquals(newHoverItem, HoverItem))
                         {
-                            if (HoverItem != null) SafeCall(HoverItem.OnMouseLeave, newArgs);
-                            if (newHoverItem != null) SafeCall(newHoverItem.OnMouseEnter, newArgs);
+                            if (HoverItem != null) SafeCall(HoverItem.OnMouseLeave, HoverItem, newArgs);
+                            if (newHoverItem != null) SafeCall(newHoverItem.OnMouseEnter, newHoverItem, newArgs);
                             HoverItem = newHoverItem;
                         }
                     }
@@ -260,23 +266,23 @@ namespace Gum
                             // Could have clicked a child of the popup.
                             if (HoverItem == null || !HoverItem.IsChildOf(PopupItem))
                             {
-                                SafeCall(PopupItem.OnPopupClose);
+                                SafeCall(PopupItem.OnPopupClose, PopupItem);
                                 DestroyWidget(PopupItem);
                                 PopupItem = null;
                             }
                         }
 
-                        if (HoverItem != null) SafeCall(HoverItem.OnClick, newArgs);
+                        if (HoverItem != null) SafeCall(HoverItem.OnClick, HoverItem, newArgs);
                     }
                     break;
                 case InputEvents.KeyPress:
-                    if (FocusItem != null) SafeCall(FocusItem.OnKeyPress, Args);
+                    if (FocusItem != null) SafeCall(FocusItem.OnKeyPress, FocusItem, Args);
                     break;
                 case InputEvents.KeyDown:
-                    if (FocusItem != null) SafeCall(FocusItem.OnKeyDown, Args);
+                    if (FocusItem != null) SafeCall(FocusItem.OnKeyDown, FocusItem, Args);
                     break;
                 case InputEvents.KeyUp:
-                    if (FocusItem != null) SafeCall(FocusItem.OnKeyUp, Args);
+                    if (FocusItem != null) SafeCall(FocusItem.OnKeyUp, FocusItem, Args);
                     break;
             }
         }
@@ -297,7 +303,7 @@ namespace Gum
 
             RunTime = Time.TotalGameTime.TotalSeconds;
 
-            if (FocusItem != null) SafeCall(FocusItem.OnUpdateWhileFocus);
+            if (FocusItem != null) SafeCall(FocusItem.OnUpdateWhileFocus, FocusItem);
         }
 
         /// <summary>
