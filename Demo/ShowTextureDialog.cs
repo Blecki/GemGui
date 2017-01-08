@@ -13,7 +13,7 @@ namespace GemGuiTest
         public override void Construct()
         {
             //Set size and center on screen.
-            Rect = new Rectangle(0, 0, Root.GuiTexture.Width + 4, Root.GuiTexture.Height + 4);
+            Rect = new Rectangle(0, 0, Root.RenderData.Texture.Width + 4, Root.RenderData.Texture.Height + 4);
             AutoLayout = AutoLayout.FloatCenter;
             MinimumSize = new Point(Rect.Width, Rect.Height);
 

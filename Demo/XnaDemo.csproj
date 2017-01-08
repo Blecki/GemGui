@@ -77,7 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemoDialog.cs" />
-    <Compile Include="Input.cs" />
+    <Compile Include="GumInputMapper.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="MessageFilter.cs" />
     <Compile Include="Program.cs" />

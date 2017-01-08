@@ -15,11 +15,8 @@ namespace Gum
     /// </summary>
     public class Root
     {
-        private GraphicsDevice Device;
-        private Effect Effect;
-        public Texture2D GuiTexture { get; private set; }
+        public RenderData RenderData { get; private set; }
 
-        private Dictionary<String, TileSheet> TileSheets = new Dictionary<String, TileSheet>();
         public Widget HoverItem { get; private set; }
         public Widget FocusItem { get; private set; }
 
@@ -39,46 +36,14 @@ namespace Gum
         public float CursorBlinkTime = 0.3f;
         internal double RunTime = 0.0f;
 
-        public Root(GraphicsDevice Device, Point IdealSize, ContentManager TextureSource, String Effect, String Skin)
+        public Root(Point IdealSize, RenderData RenderData)
         {
-            this.Device = Device;
-            this.Effect = TextureSource.Load<Effect>(Effect);
-
-            // Load skin from disc. The skin is a set of tilesheets.
-            var skin = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonTileSheetSet>(
-                System.IO.File.ReadAllText(Skin));
-
-            // Pack skin into a single texture - Build atlas information from texture sizes.
-            var atlas = TextureAtlas.Compiler.Compile(skin.Sheets.Select(s =>
-                {
-                    var realTexture = TextureSource.Load<Texture2D>(s.Texture);
-                    return new TextureAtlas.Entry
-                    {
-                        Sheet = s,
-                        Rect = new Rectangle(0, 0, realTexture.Width, realTexture.Height)
-                    };
-                }).ToList());
-
-            // Create the atlas texture
-            GuiTexture = new Texture2D(Device, atlas.Dimensions.Width, atlas.Dimensions.Height);
-
-            foreach (var texture in atlas.Textures)
-            {
-                // Copy source texture into the atlas
-                var realTexture = TextureSource.Load<Texture2D>(texture.Sheet.Texture);
-                var textureData = new Color[realTexture.Width * realTexture.Height];
-                realTexture.GetData(textureData);
-                GuiTexture.SetData(0, texture.Rect, textureData, 0, realTexture.Width * realTexture.Height);
-
-                // Create a tilesheet pointing into the atlas texture.
-                TileSheets.Upsert(texture.Sheet.Name, new TileSheet(GuiTexture.Width,
-                    GuiTexture.Height, texture.Rect, texture.Sheet.TileWidth, texture.Sheet.TileHeight));
-            }
-
+            this.RenderData = RenderData;
+        
             ResizeVirtualScreen(IdealSize);
             ResetGui();
         }
-
+               
         /// <summary>
         /// Reset the gui, clearing out all existing widgets.
         /// </summary>
@@ -106,7 +71,7 @@ namespace Gum
 
             // Calculate ideal on screen size.
             // Size should never be smaller than the size of the virtual screen supplied.
-            var screenSize = Device.Viewport.Bounds;
+            var screenSize = RenderData.Device.Viewport.Bounds;
             ScaleRatio = 1;
 
             // How many times can we multiply the ideal size and still fit on the screen?
@@ -134,7 +99,7 @@ namespace Gum
         /// <returns></returns>
         public TileSheet GetTileSheet(String Name)
         {
-            return TileSheets[Name];
+            return RenderData.TileSheets[Name];
         }
 
         /// <summary>
@@ -343,19 +308,19 @@ namespace Gum
         /// </summary>
         public void Draw()
         {
-            Effect.CurrentTechnique = Effect.Techniques[0];
+            RenderData.Effect.CurrentTechnique = RenderData.Effect.Techniques[0];
 
-            Effect.Parameters["View"].SetValue(Matrix.Identity);
-            
-            Effect.Parameters["Projection"].SetValue(
-                Matrix.CreateOrthographicOffCenter(0, Device.Viewport.Width, 
-                Device.Viewport.Height, 0, -32, 32));
+            RenderData.Effect.Parameters["View"].SetValue(Matrix.Identity);
+
+            RenderData.Effect.Parameters["Projection"].SetValue(
+                Matrix.CreateOrthographicOffCenter(0, RenderData.Device.Viewport.Width,
+                RenderData.Device.Viewport.Height, 0, -32, 32));
 
             var scale = RealScreen.Width / VirtualScreen.Width;
 
             // Need to offset by the subpixel portion to avoid screen artifacts.
             // Remove this offset is porting to Monogame, monogame does it correctly.
-            Effect.Parameters["World"].SetValue(
+            RenderData.Effect.Parameters["World"].SetValue(
                 Matrix.CreateTranslation(RealScreen.X, RealScreen.Y, 1.0f)
                 * Matrix.CreateScale(scale)
 #if GEMXNA
@@ -364,12 +329,12 @@ namespace Gum
                 );
 #endif
 
-            Effect.Parameters["Texture"].SetValue(GuiTexture);
+            RenderData.Effect.Parameters["Texture"].SetValue(RenderData.Texture);
 
-            Effect.CurrentTechnique.Passes[0].Apply();
+            RenderData.Effect.CurrentTechnique.Passes[0].Apply();
 
             var mesh = RootItem.GetRenderMesh();
-            mesh.Render(Device);
+            mesh.Render(RenderData.Device);
 
             if (MousePointer != null)
             {
@@ -378,7 +343,7 @@ namespace Gum
                     .Scale(tileSheet.TileWidth, tileSheet.TileHeight)
                     .Translate(MousePosition.X, MousePosition.Y)
                     .Texture(tileSheet.TileMatrix(MousePointer.AnimationFrame));
-                mouseMesh.Render(Device);
+                mouseMesh.Render(RenderData.Device);
             }
         }
     }

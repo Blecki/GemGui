@@ -29,9 +29,8 @@ namespace GemGuiTest
 
         protected override void LoadContent()
         {
-            GuiRoot = new Gum.Root(
+            var renderData = new Gum.RenderData(
                 GraphicsDevice,
-                new Point(640, 480),
                 this.Content,
 #if GEMXNA
                 "Content/xna_draw",
@@ -39,6 +38,7 @@ namespace GemGuiTest
                 "Content/mono_draw",
 #endif
                 "Content/dwarf_corp_skin/sheets.txt");
+            GuiRoot = new Root(new Point(640, 480), renderData);
             
             GuiRoot.MousePointer = new MousePointer("mouse", 1.0f, 0);
             GuiRoot.TooltipTextSize = 2;
