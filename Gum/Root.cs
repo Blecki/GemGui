@@ -42,37 +42,13 @@ namespace Gum
         public Root(GraphicsDevice Device, Point IdealSize, ContentManager TextureSource, String Effect, String Skin)
         {
             this.Device = Device;
-            this.VirtualScreen = new Rectangle(0,0,IdealSize.X, IdealSize.Y);
-
-            // Calculate ideal on screen size.
-            // Size should never be smaller than the size of the virtual screen supplied.
-            var screenSize = Device.Viewport.Bounds;
-            ScaleRatio = 1;
-
-            // How many times can we multiply the ideal size and still fit on the screen?
-            while (((IdealSize.X * (ScaleRatio + 1)) <= screenSize.Width) &&
-                ((IdealSize.Y * (ScaleRatio + 1)) <= screenSize.Height))
-                ScaleRatio += 1;
-
-            // How much space did we leave to the left and right? 
-            var horizontalExpansion = ((screenSize.Width - (IdealSize.X * ScaleRatio)) / 2) / ScaleRatio;
-            var verticalExpansion = ((screenSize.Height - (IdealSize.Y * ScaleRatio)) / 2) / ScaleRatio;
-
-            VirtualScreen = new Rectangle(0, 0, IdealSize.X + horizontalExpansion + horizontalExpansion,
-                IdealSize.Y + verticalExpansion + verticalExpansion);
-
-            RealScreen = new Rectangle(0, 0, VirtualScreen.Width * ScaleRatio, VirtualScreen.Height * ScaleRatio);
-            RealScreen = new Rectangle((screenSize.Width - RealScreen.Width) / 2,
-                (screenSize.Height - RealScreen.Height) / 2,
-                RealScreen.Width, RealScreen.Height);
-
             this.Effect = TextureSource.Load<Effect>(Effect);
 
             // Load skin from disc. The skin is a set of tilesheets.
             var skin = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonTileSheetSet>(
                 System.IO.File.ReadAllText(Skin));
 
-            // Pack skin into a single texture.
+            // Pack skin into a single texture - Build atlas information from texture sizes.
             var atlas = TextureAtlas.Compiler.Compile(skin.Sheets.Select(s =>
                 {
                     var realTexture = TextureSource.Load<Texture2D>(s.Texture);
@@ -85,6 +61,7 @@ namespace Gum
 
             // Create the atlas texture
             GuiTexture = new Texture2D(Device, atlas.Dimensions.Width, atlas.Dimensions.Height);
+
             foreach (var texture in atlas.Textures)
             {
                 // Copy source texture into the atlas
@@ -98,12 +75,56 @@ namespace Gum
                     GuiTexture.Height, texture.Rect, texture.Sheet.TileWidth, texture.Sheet.TileHeight));
             }
 
-            // Create the default root element.
+            ResizeVirtualScreen(IdealSize);
+            ResetGui();
+        }
+
+        /// <summary>
+        /// Reset the gui, clearing out all existing widgets.
+        /// </summary>
+        public void ResetGui()
+        {
+            HoverItem = null;
+            FocusItem = null;
+            PopupItem = null;
+            TooltipItem = null;
             RootItem = ConstructWidget(new Widget
-            {
-                Rect = VirtualScreen,
-                Transparent = true
-            });
+                {
+                    Rect = VirtualScreen,
+                    Transparent = true
+                });
+
+        }
+
+        /// <summary>
+        /// Resize the virtual screen and find the ideal size and positioning.
+        /// </summary>
+        /// <param name="VirtualSize"></param>
+        public void ResizeVirtualScreen(Point VirtualSize)
+        {
+            this.VirtualScreen = new Rectangle(0, 0, VirtualSize.X, VirtualSize.Y);
+
+            // Calculate ideal on screen size.
+            // Size should never be smaller than the size of the virtual screen supplied.
+            var screenSize = Device.Viewport.Bounds;
+            ScaleRatio = 1;
+
+            // How many times can we multiply the ideal size and still fit on the screen?
+            while (((VirtualSize.X * (ScaleRatio + 1)) <= screenSize.Width) &&
+                ((VirtualSize.Y * (ScaleRatio + 1)) <= screenSize.Height))
+                ScaleRatio += 1;
+
+            // How much space did we leave to the left and right? 
+            var horizontalExpansion = ((screenSize.Width - (VirtualSize.X * ScaleRatio)) / 2) / ScaleRatio;
+            var verticalExpansion = ((screenSize.Height - (VirtualSize.Y * ScaleRatio)) / 2) / ScaleRatio;
+
+            VirtualScreen = new Rectangle(0, 0, VirtualSize.X + horizontalExpansion + horizontalExpansion,
+                VirtualSize.Y + verticalExpansion + verticalExpansion);
+
+            RealScreen = new Rectangle(0, 0, VirtualScreen.Width * ScaleRatio, VirtualScreen.Height * ScaleRatio);
+            RealScreen = new Rectangle((screenSize.Width - RealScreen.Width) / 2,
+                (screenSize.Height - RealScreen.Height) / 2,
+                RealScreen.Width, RealScreen.Height);
         }
 
         /// <summary>
@@ -128,7 +149,12 @@ namespace Gum
             return NewWidget;
         }
 
-        private void CleanupWidget(Widget Widget)
+        /// <summary>
+        /// Prepare a widget for destruction - make sure any lingering references to it or its children
+        /// are removed.
+        /// </summary>
+        /// <param name="Widget"></param>
+        internal void CleanupWidget(Widget Widget)
         {
             foreach (var child in Widget.Children)
                 CleanupWidget(child);

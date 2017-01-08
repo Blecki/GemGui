@@ -175,6 +175,18 @@ namespace Gum
             Invalidate();
         }
 
+        public void Clear()
+        {
+            foreach (var child in Children)
+            {
+                Root.CleanupWidget(child);
+                child.Parent = null;
+            }
+
+            Children.Clear();
+            Invalidate();
+        }
+
         /// <summary>
         /// Check to see if the widget is a child, grandchild, etc of another widget.
         /// </summary>
