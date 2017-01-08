@@ -63,17 +63,17 @@ namespace Gum.Widgets
         {
             var tiles = Root.GetTileSheet(Graphics);
 
-            var topButton = Mesh.CreateSpriteQuad()
+            var topButton = Mesh.Quad()
                 .Scale(tiles.TileWidth, tiles.TileHeight)
                 .Translate(Rect.X, Rect.Y)
                 .Texture(tiles.TileMatrix(0));
 
-            var bottomButton = Mesh.CreateSpriteQuad()
+            var bottomButton = Mesh.Quad()
                 .Scale(tiles.TileWidth, tiles.TileHeight)
                 .Translate(Rect.X, Rect.Y + Rect.Height - tiles.TileHeight)
                 .Texture(tiles.TileMatrix(3));
 
-            var background = Mesh.CreateSpriteQuad()
+            var background = Mesh.Quad()
                 .Scale(tiles.TileWidth, Rect.Height - tiles.TileHeight - tiles.TileHeight)
                 .Translate(Rect.X, Rect.Y + tiles.TileHeight)
                 .Texture(tiles.TileMatrix(1));
@@ -82,7 +82,7 @@ namespace Gum.Widgets
             var barPosition = ScrollPercentage * scrollSize;
             var pixelPosition = Rect.Y + tiles.TileHeight + (int)barPosition;
 
-            var bar = Mesh.CreateSpriteQuad()
+            var bar = Mesh.Quad()
                 .Scale(tiles.TileWidth, tiles.TileHeight)
                 .Translate(Rect.X, pixelPosition - (tiles.TileHeight / 2))
                 .Texture(tiles.TileMatrix(2));

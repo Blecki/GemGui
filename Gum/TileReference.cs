@@ -10,6 +10,7 @@ namespace Gum
     {
         public String Sheet;
         public int Tile;
+        public Point Dimensions = new Point(1, 1);
  
         public TileReference(String Sheet, int Tile)
         {

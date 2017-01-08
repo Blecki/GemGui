@@ -18,14 +18,27 @@ namespace Gum
         MouseClick
     }
 
-    public struct InputEventArgs
+    public class InputEventArgs
     {
         public bool Alt;
         public bool Control;
         public bool Shift;
 
+        /// <summary>
+        /// Key pressed for keyboard events.
+        /// </summary>
         public int KeyValue;
+
+        /// <summary>
+        /// X position of mouse for mouse events.
+        /// </summary>
         public int X;
+
+        /// <summary>
+        /// Y position of mouse for mouse events.
+        /// </summary>
         public int Y;
+
+        public bool Handled;
     }
 }

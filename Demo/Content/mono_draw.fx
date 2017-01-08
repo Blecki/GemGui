@@ -14,7 +14,6 @@ sampler diffuseSampler = sampler_state
     AddressV = Wrap;
 };
 
-
 struct TexturedVertexShaderInput
 {
 	float4 Position : SV_Position0;
@@ -32,7 +31,8 @@ struct TexturedVertexShaderOutput
 TexturedVertexShaderOutput TexturedVertexShaderFunction(TexturedVertexShaderInput input)
 {
     TexturedVertexShaderOutput output;
-    input.Position.w = 1.0f;
+ 
+	input.Position.w = 1.0f;
     float4 worldPosition = mul(input.Position, World);
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
@@ -50,8 +50,9 @@ struct PixelShaderOutput
 PixelShaderOutput PSTexturedColor(TexturedVertexShaderOutput input) : COLOR0
 {
     PixelShaderOutput output;
+
 	float4 texColor = tex2D(diffuseSampler, input.Texcoord);
-		output.Color = texColor * input.Color;
+	output.Color = texColor * input.Color;
 
     return output;
 }

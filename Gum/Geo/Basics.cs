@@ -26,7 +26,7 @@ namespace Gum
             return result;
         }
 
-        public Mesh Transform(Matrix m, int start, int count)
+        private Mesh Transform(Matrix m, int start, int count)
         {
             if (start < 0) start = verticies.Length - start;
             for (int i = start; i < start + count; ++i)
@@ -34,7 +34,6 @@ namespace Gum
             return this;
         }
 
-        // Todo: Replace calls to this with calls to scale and translate if possible.
         public Mesh Transform(Matrix m)
         {
             return Transform(m, 0, verticies.Length);
@@ -57,8 +56,14 @@ namespace Gum
             return this;
         }
 
-        // Todo: Needs better name.
-        public Mesh Tile(TileSheet Sheet, int T)
+        public Mesh Texture(Matrix M, int StartIndex, int Count)
+        {
+            for (int i = StartIndex; i < StartIndex + Count; ++i)
+                verticies[i].TextureCoordinate = Vector2.Transform(verticies[i].TextureCoordinate, M);
+            return this;
+        }
+
+        public Mesh TileScaleAndTexture(TileSheet Sheet, int T)
         {
             return this.Scale(Sheet.TileWidth, Sheet.TileHeight)
                 .Texture(Sheet.TileMatrix(T));

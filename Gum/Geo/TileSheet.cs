@@ -7,6 +7,10 @@ using Microsoft.Xna.Framework;
 
 namespace Gum
 {
+    /// <summary>
+    /// Calculates UV transformation matricies for tiles inside a tilesheet, that is itself a portion
+    /// of a larger texture atlas.
+    /// </summary>
     public class TileSheet
     {
         public int TextureWidth { get; private set; }

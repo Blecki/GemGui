@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework;
 
 namespace Gum
 {
+    /// <summary>
+    /// A simple vertex type with position, color, and texture.
+    /// </summary>
     public struct Vertex : IVertexType
     {
         public Vector3 Position;
@@ -26,22 +29,19 @@ namespace Gum
         }
     }
 
+    /// <summary>
+    /// A simple indexed triangle mesh.
+    /// </summary>
     public partial class Mesh
     {
         public Vertex[] verticies;
         public short[] indicies;
 
-        public int VertexCount { get { return verticies.Length; } }
-
-        public Vertex GetVertex(int i)
-        {
-            return verticies[i];
-        }
-
         public void Render(GraphicsDevice Device)
         {
-            Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, verticies, 0, verticies.Length,
-                                indicies, 0, indicies.Length / 3);
+            if (verticies.Length != 0)
+                Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, verticies, 0, verticies.Length,
+                    indicies, 0, indicies.Length / 3);
         }
 
         public static Mesh EmptyMesh()

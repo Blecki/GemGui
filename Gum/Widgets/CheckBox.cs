@@ -36,10 +36,10 @@ namespace Gum.Widgets
             var baseMesh = base.Redraw();
             var baseDrawArea = base.GetDrawableInterior();
 
-            var checkMesh = Mesh.CreateSpriteQuad()
-                .Transform(Matrix.CreateScale(baseDrawArea.Height, baseDrawArea.Height, 1.0f))
-                .Transform(Matrix.CreateTranslation(baseDrawArea.X, baseDrawArea.Y, 0.0f))
-                .Texture(Root.TileSheets[Graphics].TileMatrix(CheckState ? 1 : 0));
+            var checkMesh = Mesh.Quad()
+                .Scale(baseDrawArea.Height, baseDrawArea.Height)
+                .Translate(baseDrawArea.X, baseDrawArea.Y)
+                .Texture(Root.GetTileSheet(Graphics).TileMatrix(CheckState ? 1 : 0));
 
             return Mesh.Merge(baseMesh, checkMesh);
         }
@@ -50,8 +50,8 @@ namespace Gum.Widgets
             if (!String.IsNullOrEmpty(Text))
             {
                 var font = Root.GetTileSheet(Font);
-                size = new Point(font.TileWidth * TextSize * Text.Length,
-                    font.TileHeight * TextSize);
+                size = new Point(font.TileWidth * IntegerTextSize * Text.Length,
+                    font.TileHeight * IntegerTextSize);
             }
 
             var gfx = Root.GetTileSheet(Graphics);

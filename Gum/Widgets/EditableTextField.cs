@@ -70,7 +70,7 @@ namespace Gum.Widgets
                 {
                     var font = Root.GetTileSheet(Font);
                     var drawableArea = this.GetDrawableInterior();
-                    var cursorMesh = Mesh.CreateSpriteQuad()
+                    var cursorMesh = Mesh.Quad()
                         .Scale(font.TileWidth * TextSize, font.TileHeight * TextSize)
                         .Translate(
                             drawableArea.X + (CursorPosition * font.TileWidth * TextSize) - ((font.TileWidth * TextSize) / 2),

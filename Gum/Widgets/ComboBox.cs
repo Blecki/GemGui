@@ -60,7 +60,7 @@ namespace Gum.Widgets
                         else
                         {
                             var childRect = new Rectangle(Rect.X, Rect.Y + Rect.Height, Rect.Width, Rect.Width);
-                            var listView = Root.CreateWidget(new ListView
+                            var listView = Root.ConstructWidget(new ListView
                                 {
                                     Rect = childRect,
                                     TextSize = TextSize,
@@ -100,7 +100,7 @@ namespace Gum.Widgets
 
         public override Point GetBestSize()
         {
-            var baseSize = new Point(0, Root.GetTileSheet(Font).TileHeight * TextSize);
+            var baseSize = new Point(0, Root.GetTileSheet(Font).TileHeight * IntegerTextSize);
             
             var gfx = Root.GetTileSheet(Graphics);
             if (baseSize.X < gfx.TileWidth) baseSize.X = gfx.TileWidth;
@@ -127,8 +127,8 @@ namespace Gum.Widgets
         {
             var gfx = Root.GetTileSheet(Graphics);
             var interior = GetDrawableInterior();
-            var downArrow = Mesh.CreateSpriteQuad()
-               .Tile(gfx, 0)
+            var downArrow = Mesh.Quad()
+               .TileScaleAndTexture(gfx, 0)
                .Translate(interior.X + interior.Width, interior.Y);
             return Mesh.Merge(base.Redraw(), downArrow);
         }

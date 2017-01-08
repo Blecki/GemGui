@@ -19,7 +19,7 @@ namespace GemGuiTest
 
             Border = "border-thin";
 
-            AddChild(Root.CreateWidget(new Widget
+            AddChild(new Widget
             {
                 Text = "CLOSE",
                 TextHorizontalAlign = HorizontalAlign.Center,
@@ -28,15 +28,15 @@ namespace GemGuiTest
                 TextSize = 2,
                 OnClick = (sender, args) => this.Close(),
                 AutoLayout = AutoLayout.FloatBottomRight
-            }));
+            });
         }
 
         protected override Mesh Redraw()
         {
             var drawable = this.GetDrawableInterior();
-            var mesh = Mesh.CreateSpriteQuad()
-                .Transform(Matrix.CreateScale(drawable.Width, drawable.Height, 1.0f))
-                .Transform(Matrix.CreateTranslation(drawable.X, drawable.Y, 0.0f));
+            var mesh = Mesh.Quad()
+                .Scale(drawable.Width, drawable.Height)
+                .Translate(drawable.X, drawable.Y);
 
             return Mesh.Merge(base.Redraw(), mesh);
         }

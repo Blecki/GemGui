@@ -21,7 +21,13 @@ namespace Gum.TextureAtlas
 
     internal static class BspSubdivision
     {
-        internal static void PlaceTextures(Rectangle dim, List<Entry> Textures)
+        /// <summary>
+        /// Attempt to place textures into the space defined by Dimensions until no more can be fit. 
+        /// Subdivide the space after each insertion. Assume textures are sorted by size.
+        /// </summary>
+        /// <param name="Dimensions"></param>
+        /// <param name="Textures"></param>
+        internal static void TryPlaceTextures(Rectangle Dimensions, List<Entry> Textures)
         {
             Entry tex = null;
 
@@ -29,21 +35,22 @@ namespace Gum.TextureAtlas
             for (int i = 0; i < Textures.Count; ++i)
             {
                 var Entry = Textures[i];
-                if (Entry.Rect.Width > dim.Width || Entry.Rect.Height > dim.Height)
+                if (Entry.Rect.Width > Dimensions.Width || Entry.Rect.Height > Dimensions.Height)
                     continue;
                 Textures.RemoveAt(i);
                 tex = Entry;
                 break;
             }
 
+            // Quit if nothing fit.
             if (tex == null) return;
 
-            tex.Rect.X = dim.X;
-            tex.Rect.Y = dim.Y;
+            tex.Rect.X = Dimensions.X;
+            tex.Rect.Y = Dimensions.Y;
 
             //Subdivide remaining space.
-            int HorizontalDifference = dim.Width - tex.Rect.Width;
-            int VerticalDifference = dim.Height - tex.Rect.Height;
+            int HorizontalDifference = Dimensions.Width - tex.Rect.Width;
+            int VerticalDifference = Dimensions.Height - tex.Rect.Height;
 
             if (HorizontalDifference == 0 && VerticalDifference == 0) //Perfect fit!
                 return;
@@ -51,47 +58,66 @@ namespace Gum.TextureAtlas
             Rectangle? ASpace = null;
             Rectangle? BSpace = null;            
 
+            // Subdivide the space on the shortest axis of the texture we just placed.
             if (HorizontalDifference >= VerticalDifference)
             {
-                ASpace = new Rectangle(dim.X + tex.Rect.Width, dim.Y, HorizontalDifference, dim.Height);
+                ASpace = new Rectangle(Dimensions.X + tex.Rect.Width, Dimensions.Y, HorizontalDifference, Dimensions.Height);
+
+                // Remember that this isn't a perfect split - a chunk belongs to the placed texture.
                 if (VerticalDifference > 0)
-                    BSpace = new Rectangle(dim.X, dim.Y + tex.Rect.Height, tex.Rect.Width, VerticalDifference);
+                    BSpace = new Rectangle(Dimensions.X, Dimensions.Y + tex.Rect.Height, tex.Rect.Width, VerticalDifference);
             }
             else
             {
-                ASpace = new Rectangle(dim.X, dim.Y + tex.Rect.Height, dim.Width, VerticalDifference);
+                ASpace = new Rectangle(Dimensions.X, Dimensions.Y + tex.Rect.Height, Dimensions.Width, VerticalDifference);
                 if (HorizontalDifference > 0)
-                    BSpace = new Rectangle(dim.X + tex.Rect.Width, dim.Y, HorizontalDifference, tex.Rect.Height);
+                    BSpace = new Rectangle(Dimensions.X + tex.Rect.Width, Dimensions.Y, HorizontalDifference, tex.Rect.Height);
             }
 
-            if (ASpace.HasValue) PlaceTextures(ASpace.Value, Textures);
-            if (BSpace.HasValue) PlaceTextures(BSpace.Value, Textures);
+            if (ASpace.HasValue) TryPlaceTextures(ASpace.Value, Textures);
+            if (BSpace.HasValue) TryPlaceTextures(BSpace.Value, Textures);
         }
 
-        internal static Rectangle ExpandingSpaceHorizontal(Rectangle totalArea, Rectangle workingArea, List<Entry> Textures)
+        /// <summary>
+        /// Attempt to fit textures into working space, and if any are left, double vertical size of working space.
+        /// </summary>
+        /// <param name="TotalArea"></param>
+        /// <param name="WorkingArea"></param>
+        /// <param name="Textures"></param>
+        /// <returns></returns>
+        internal static Rectangle ExpandVertical(Rectangle TotalArea, Rectangle WorkingArea, List<Entry> Textures)
         {
-            PlaceTextures(workingArea, Textures);
+            TryPlaceTextures(WorkingArea, Textures);
+
             if (Textures.Count > 0)
             {
-                workingArea = new Rectangle(0, totalArea.Height, totalArea.Width, totalArea.Height);
-                totalArea.Height *= 2;
-                return ExpandingSpaceVertical(totalArea, workingArea, Textures);
+                WorkingArea = new Rectangle(0, TotalArea.Height, TotalArea.Width, TotalArea.Height);
+                TotalArea.Height *= 2;
+                return ExpandHorizontal(TotalArea, WorkingArea, Textures);
             }
             else
-                return totalArea;
+                return TotalArea;
         }
 
-        internal static Rectangle ExpandingSpaceVertical(Rectangle totalArea, Rectangle workingArea, List<Entry> Textures)
+        /// <summary>
+        /// Attempt to fit textures into working space, and if any are left, double horizontal size of working space.
+        /// </summary>
+        /// <param name="TotalArea"></param>
+        /// <param name="WorkingArea"></param>
+        /// <param name="Textures"></param>
+        /// <returns></returns>
+        internal static Rectangle ExpandHorizontal(Rectangle TotalArea, Rectangle WorkingArea, List<Entry> Textures)
         {
-            PlaceTextures(workingArea, Textures);
+            TryPlaceTextures(WorkingArea, Textures);
+
             if (Textures.Count > 0)
             {
-                workingArea = new Rectangle(totalArea.Width, 0, totalArea.Width, totalArea.Height);
-                totalArea.Width *= 2;
-                return ExpandingSpaceHorizontal(totalArea, workingArea, Textures);
+                WorkingArea = new Rectangle(TotalArea.Width, 0, TotalArea.Width, TotalArea.Height);
+                TotalArea.Width *= 2;
+                return ExpandVertical(TotalArea, WorkingArea, Textures);
             }
             else
-                return totalArea;
+                return TotalArea;
         }
     }
 
@@ -104,15 +130,16 @@ namespace Gum.TextureAtlas
                 return (B.Rect.Width * B.Rect.Height) - (A.Rect.Width * A.Rect.Height);
             });
 
-            var LargestEntry = Entries[0];
+            // Find smallest power of 2 sized texture that can hold the largest entry.
+            var largestEntry = Entries[0];
             var texSize = new Rectangle(0, 0, 1, 1);
-            while (texSize.Width < LargestEntry.Rect.Width)
+            while (texSize.Width < largestEntry.Rect.Width)
                 texSize.Width *= 2;
-            while (texSize.Height < LargestEntry.Rect.Height)
+            while (texSize.Height < largestEntry.Rect.Height)
                 texSize.Height *= 2;
 
-            var PendingEntries = new List<Entry>(Entries);
-            texSize = BspSubdivision.ExpandingSpaceHorizontal(texSize, texSize, PendingEntries);
+            // Be sure to pass a copy of the list since the algorithm modifies it.
+            texSize = BspSubdivision.ExpandVertical(texSize, texSize, new List<Entry>(Entries));
             return new Atlas { Dimensions = texSize, Textures = Entries };
         }
     }

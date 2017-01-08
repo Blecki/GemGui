@@ -16,9 +16,8 @@ namespace GemGuiTest
         GraphicsDeviceManager graphics;
         private Gum.Root GuiRoot;
         private KeyboardInput Input;
-        public String Lib;
 
-        public Main(String Lib)
+        public Main()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 800;
@@ -26,7 +25,6 @@ namespace GemGuiTest
 
             Input = new KeyboardInput(Window.Handle);
 
-            this.Lib = Lib;
         }
 
         protected override void LoadContent()
@@ -35,16 +33,17 @@ namespace GemGuiTest
                 GraphicsDevice,
                 new Point(640, 480),
                 this.Content,
-                String.Format("Content/{0}_draw", Lib),
+#if GEMXNA
+                "Content/xna_draw",
+#elif GEMMONO
+                "Content/mono_draw",
+#endif
                 "Content/dwarf_corp_skin/sheets.txt");
-
-            if (Lib == "xna") GuiRoot.AddPixelOffset = true;
             
             GuiRoot.MousePointer = new MousePointer("mouse", 1.0f, 0);
             GuiRoot.TooltipTextSize = 2;
 
-            var frame = GuiRoot.RootItem.AddChild(
-                GuiRoot.CreateWidget(new Widget
+            var frame = GuiRoot.RootItem.AddChild(new Widget
                 {
                     Text = "- DEMO MENU -",
                     Border = "border-one",
@@ -53,40 +52,40 @@ namespace GemGuiTest
                     MinimumSize = new Point(256,256),
                     AutoLayout = AutoLayout.FloatCenter,
                     TopMargin = GuiRoot.GetTileSheet("font").TileHeight * 2
-                }));
+                });
             
-            frame.AddChild(GuiRoot.CreateWidget(new Widget
+            frame.AddChild(new Widget
             {
                 Text = "View Atlas",
                 Border = "border-thin",
                 OnClick = (sender, args) =>
                 {
-                    var dialog = GuiRoot.CreateWidget(new ShowTextureDialog());
+                    var dialog = GuiRoot.ConstructWidget(new ShowTextureDialog());
                     GuiRoot.ShowDialog(dialog);
                     GuiRoot.RootItem.Layout();
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2,
+                TextSize = 1,
                 AutoLayout = AutoLayout.DockTop
-            }));
+            });
 
-            frame.AddChild(GuiRoot.CreateWidget(new Widget
+            frame.AddChild(new Widget
             {
                 Text = "View Demo Pane",
                 Border = "border-thin",
                 OnClick = (sender, args) =>
                 {
-                    var dialog = GuiRoot.CreateWidget(new DemoDialog());
+                    var dialog = GuiRoot.ConstructWidget(new DemoDialog());
                     GuiRoot.ShowDialog(dialog);
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2,
+                TextSize = 1.5f,
                 AutoLayout = AutoLayout.DockTop
-            }));
+            });
 
-            frame.AddChild(GuiRoot.CreateWidget(new Widget
+            frame.AddChild(new Widget
             {
                 Text = "Toggle Alignment",
                 Border = "border-thin",
@@ -103,14 +102,12 @@ namespace GemGuiTest
                     else
                         frame.AutoLayout = AutoLayout.FloatTopLeft;
                     GuiRoot.RootItem.Layout();
-                    sender.Invalidate();
-
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2,
+                TextSize = 2.5f,
                 AutoLayout = AutoLayout.DockTop
-            }));
+            });
 
             GuiRoot.RootItem.Layout();         
         }

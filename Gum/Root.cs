@@ -19,18 +19,16 @@ namespace Gum
         private Effect Effect;
         public Texture2D GuiTexture { get; private set; }
 
-        internal Dictionary<String, TileSheet> TileSheets = new Dictionary<String, TileSheet>();
-        internal Widget HoverItem;
+        private Dictionary<String, TileSheet> TileSheets = new Dictionary<String, TileSheet>();
+        public Widget HoverItem { get; private set; }
         public Widget FocusItem { get; private set; }
 
         public Rectangle VirtualScreen { get; private set; }
         public Rectangle RealScreen { get; private set; }
         public int ScaleRatio { get; private set; }
-        public Gum.Widget RootItem { get; private set; }
-        public Gum.Widget PopupItem { get; private set; }
-        public Gum.Widget TooltipItem { get; private set; }
-
-        public bool AddPixelOffset = false;
+        public Widget RootItem { get; private set; }
+        public Widget PopupItem { get; private set; }
+        public Widget TooltipItem { get; private set; }
 
         public MousePointer MousePointer = null;
         private Point MousePosition = new Point(0, 0);
@@ -49,26 +47,24 @@ namespace Gum
             // Calculate ideal on screen size.
             // Size should never be smaller than the size of the virtual screen supplied.
             var screenSize = Device.Viewport.Bounds;
-            var scaleFactor = 0;
+            ScaleRatio = 1;
 
             // How many times can we multiply the ideal size and still fit on the screen?
-            while (((IdealSize.X * (scaleFactor + 1)) <= screenSize.Width) &&
-                ((IdealSize.Y * (scaleFactor + 1)) <= screenSize.Height))
-                scaleFactor += 1;
+            while (((IdealSize.X * (ScaleRatio + 1)) <= screenSize.Width) &&
+                ((IdealSize.Y * (ScaleRatio + 1)) <= screenSize.Height))
+                ScaleRatio += 1;
 
             // How much space did we leave to the left and right? 
-            var horizontalExpansion = ((screenSize.Width - (IdealSize.X * scaleFactor)) / 2) / scaleFactor;
-            var verticalExpansion = ((screenSize.Height - (IdealSize.Y * scaleFactor)) / 2) / scaleFactor;
+            var horizontalExpansion = ((screenSize.Width - (IdealSize.X * ScaleRatio)) / 2) / ScaleRatio;
+            var verticalExpansion = ((screenSize.Height - (IdealSize.Y * ScaleRatio)) / 2) / ScaleRatio;
 
             VirtualScreen = new Rectangle(0, 0, IdealSize.X + horizontalExpansion + horizontalExpansion,
                 IdealSize.Y + verticalExpansion + verticalExpansion);
 
-            RealScreen = new Rectangle(0, 0, VirtualScreen.Width * scaleFactor, VirtualScreen.Height * scaleFactor);
+            RealScreen = new Rectangle(0, 0, VirtualScreen.Width * ScaleRatio, VirtualScreen.Height * ScaleRatio);
             RealScreen = new Rectangle((screenSize.Width - RealScreen.Width) / 2,
                 (screenSize.Height - RealScreen.Height) / 2,
                 RealScreen.Width, RealScreen.Height);
-
-            ScaleRatio = scaleFactor;
 
             this.Effect = TextureSource.Load<Effect>(Effect);
 
@@ -103,7 +99,7 @@ namespace Gum
             }
 
             // Create the default root element.
-            RootItem = CreateWidget(new Widget
+            RootItem = ConstructWidget(new Widget
             {
                 Rect = VirtualScreen,
                 Transparent = true
@@ -120,10 +116,16 @@ namespace Gum
             return TileSheets[Name];
         }
 
-        public Widget CreateWidget(Widget CreatedWidget)
+        /// <summary>
+        /// Widgets must be constructed or some operations will fail. Use this function to construct a widget 
+        /// when the widget is not being immediately added to its parent.
+        /// </summary>
+        /// <param name="CreatedWidget"></param>
+        /// <returns></returns>
+        public Widget ConstructWidget(Widget NewWidget)
         {
-            CreatedWidget._Construct(this);
-            return CreatedWidget;
+            NewWidget._Construct(this);
+            return NewWidget;
         }
 
         private void CleanupWidget(Widget Widget)
@@ -173,7 +175,7 @@ namespace Gum
             if (TooltipItem != null)
                 DestroyWidget(TooltipItem);
 
-            TooltipItem = CreateWidget(new Widget
+            TooltipItem = ConstructWidget(new Widget
                 {
                     Text = Tip,
                     Border = "border-thin",
@@ -272,7 +274,11 @@ namespace Gum
                             }
                         }
 
-                        if (HoverItem != null) SafeCall(HoverItem.OnClick, HoverItem, newArgs);
+                        if (HoverItem != null)
+                        {
+                            Args.Handled = true;
+                            SafeCall(HoverItem.OnClick, HoverItem, newArgs);
+                        }
                     }
                     break;
                 case InputEvents.KeyPress:
@@ -326,18 +332,23 @@ namespace Gum
             Effect.Parameters["World"].SetValue(
                 Matrix.CreateTranslation(RealScreen.X, RealScreen.Y, 1.0f)
                 * Matrix.CreateScale(scale)
-                * (AddPixelOffset ? Matrix.CreateTranslation(0.5f, 0.5f, 0.0f) : Matrix.Identity));
+#if GEMXNA
+                * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f));
+#elif GEMMONO
+                );
+#endif
+
             Effect.Parameters["Texture"].SetValue(GuiTexture);
 
             Effect.CurrentTechnique.Passes[0].Apply();
 
-            var mesh = RootItem.PrepareRenderMesh();
+            var mesh = RootItem.GetRenderMesh();
             mesh.Render(Device);
 
             if (MousePointer != null)
             {
                 var tileSheet = GetTileSheet(MousePointer.Sheet);
-                var mouseMesh = Mesh.CreateSpriteQuad()
+                var mouseMesh = Mesh.Quad()
                     .Scale(tileSheet.TileWidth, tileSheet.TileHeight)
                     .Translate(MousePosition.X, MousePosition.Y)
                     .Texture(tileSheet.TileMatrix(MousePointer.AnimationFrame));

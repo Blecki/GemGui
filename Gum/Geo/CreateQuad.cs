@@ -9,7 +9,7 @@ namespace Gum
 {
     public partial class Mesh
     {
-        public static Mesh CreateSpriteQuad()
+        public static Mesh Quad()
         {
             var result = new Mesh();
             result.verticies = new Vertex[4];

@@ -20,11 +20,10 @@ namespace Gum
 
             foreach (var c in String)
             {
-                var glyphMatrix = FontSheet.TileMatrix(c - ' ');
-                glyphMeshes.Add(Mesh.CreateSpriteQuad()
-                    .Texture(glyphMatrix)
-                    .Transform(Matrix.CreateScale(GlyphSize.X, GlyphSize.Y, 1.0f))
-                    .Transform(Matrix.CreateTranslation(pos.X, pos.Y, 0.0f)));
+                glyphMeshes.Add(Mesh.Quad()
+                    .Texture(FontSheet.TileMatrix(c - ' '))
+                    .Scale(GlyphSize.X, GlyphSize.Y)
+                    .Translate(pos.X, pos.Y));
                 pos.X += GlyphSize.X;
             }
 

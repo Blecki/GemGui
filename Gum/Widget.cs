@@ -10,6 +10,8 @@ namespace Gum
     /// </summary>
     public partial class Widget
     {
+        #region Position and Layout
+
         public Rectangle Rect = new Rectangle(0, 0, 0, 0);
 
         public Point MinimumSize = new Point(0, 0);
@@ -18,10 +20,13 @@ namespace Gum
         public int Padding = 2;
         public int TopMargin = 0;
 
-        internal List<Widget> Children = new List<Widget>();
-        public Widget Parent { get; private set; }
-        public Root Root { get; internal set; }
+        #endregion
 
+        #region Appearance
+
+        /// <summary>
+        /// If transparent, this widget is not drawn. Children may still be drawn.
+        /// </summary>
         public bool Transparent = false;
 
         private Vector4? _backgroundColor = null;
@@ -36,9 +41,23 @@ namespace Gum
             set { _backgroundColor = value; }
         }
 
+        /// <summary>
+        /// Tile to use as a background for this widget. If null, not background is drawn.
+        /// </summary>
         public TileReference Background = null;
         public String Graphics = null;
+
+        /// <summary>
+        /// Tilesheet to use as a border for this widget. If null, no border is drawn.
+        /// </summary>
         public String Border = null;
+        
+        /// <summary>
+        /// Text to draw on this widget.
+        /// </summary>
+        public String Text = null;
+        public HorizontalAlign TextHorizontalAlign = HorizontalAlign.Left;
+        public VerticalAlign TextVerticalAlign = VerticalAlign.Top;
 
         private String _Font = null;
         public String Font
@@ -64,11 +83,21 @@ namespace Gum
             set { _textColor = value; }
         }
 
-        public String Text = null;
-        public HorizontalAlign TextHorizontalAlign = HorizontalAlign.Left;
-        public VerticalAlign TextVerticalAlign = VerticalAlign.Top;
-        public int TextSize = 1; // Todo: Floating point text size?
+        /// <summary>
+        /// Size of text, in multiples of the font size. Font is always drawn pixel-perfect - it will always be
+        /// a perfect multiple of the underlying bitmap on the screen. However, it is matching to SCREEN PIXELS,
+        /// so a fractional size relative the gui's virtual screen is possible.
+        /// </summary>
+        public float TextSize = 1.0f; 
+        public int IntegerTextSize { get { return (int)Math.Ceiling(PixelPerfectTextSize); } }
+        public float PixelPerfectTextSize {  get { return (float)Math.Floor(TextSize * (float)Root.ScaleRatio) / (float)Root.ScaleRatio; } }
+
         public String Tooltip = null;
+
+        #endregion
+
+        #region Events
+
         public Action<Widget, InputEventArgs> OnMouseEnter = null;
         public Action<Widget, InputEventArgs> OnMouseLeave = null;
         public Action<Widget, InputEventArgs> OnClick = null;
@@ -79,17 +108,26 @@ namespace Gum
         public Action<Widget, InputEventArgs> OnKeyUp = null;
         public Action<Widget> OnPopupClose = null;
         public Action<Widget> OnUpdateWhileFocus = null;
+        public Action<Widget> OnLayout = null;
+
+        #endregion
 
         private Mesh CachedRenderMesh = null;
-
-        
+        internal List<Widget> Children = new List<Widget>();
+        public Widget Parent { get; private set; }
+        public Root Root { get; internal set; }
+        private bool Constructed = false;
 
         public Widget() { }
 
         internal void _Construct(Root Root)
         {
             this.Root = Root;
-            this.Construct();
+            if (!Constructed)
+            {
+                Constructed = true;
+                this.Construct();
+            }
         }
 
         public virtual void Construct() { }
@@ -102,7 +140,7 @@ namespace Gum
                 if (item != null) return item;
             }
 
-            if (Rect.Contains(x, y)) return this;
+            if (!Transparent && Rect.Contains(x, y)) return this;
             return null;
         }
 
@@ -114,7 +152,14 @@ namespace Gum
 
         public Widget AddChild(Widget child)
         {
-            if (child.Root != this.Root) throw new InvalidOperationException("Can't add UIItem to different heirarchy");
+            if (!Constructed)
+                throw new InvalidOperationException("Widget must be constructed before children can be added.");
+
+            if (!child.Constructed)
+                child._Construct(Root);
+
+            if (!Object.ReferenceEquals(child.Root, Root))
+                throw new InvalidOperationException("Can't add UIItem to different heirarchy");
 
             Children.Add(child);
             child.Parent = this;
@@ -147,6 +192,10 @@ namespace Gum
             Root.DestroyWidget(this);
         }
 
+        /// <summary>
+        /// Returns the space inside the widget where it is safe to place child widgets, draw text, etc.
+        /// </summary>
+        /// <returns></returns>
         public virtual Rectangle GetDrawableInterior()
         {
             if (!String.IsNullOrEmpty(Border))
@@ -159,14 +208,19 @@ namespace Gum
                 return Rect;
         }
         
+        /// <summary>
+        /// Get the best size for this widget. Does not respect minimum or maximum sizes, those values are
+        /// enforced by the layout engine.
+        /// </summary>
+        /// <returns></returns>
         public virtual Point GetBestSize()
         {
             var size = new Point(0, 0);
             if (!String.IsNullOrEmpty(Text))
             {
                 var font = Root.GetTileSheet(Font);
-                size = new Point(font.TileWidth * TextSize * Text.Length,
-                    font.TileHeight * TextSize);
+                size = new Point(font.TileWidth * IntegerTextSize * Text.Length,
+                    font.TileHeight * IntegerTextSize);
             }
 
             if (!String.IsNullOrEmpty(Border))
@@ -179,6 +233,10 @@ namespace Gum
             return size;
         }
 
+        /// <summary>
+        /// Create the rendering mesh for this widget.
+        /// </summary>
+        /// <returns></returns>
         protected virtual Mesh Redraw()
         {
             if (Transparent)
@@ -187,17 +245,17 @@ namespace Gum
             var result = new List<Mesh>();
 
             if (Background != null)
-                result.Add(Mesh.CreateSpriteQuad()
-                    .Transform(Matrix.CreateScale(Rect.Width, Rect.Height, 1.0f))
-                    .Transform(Matrix.CreateTranslation(Rect.X, Rect.Y, 0.0f))
+                result.Add(Mesh.Quad()
+                    .Scale(Rect.Width, Rect.Height)
+                    .Translate(Rect.X, Rect.Y)
                     .Colorize(BackgroundColor)
-                    .Texture(Root.TileSheets[Background.Sheet].TileMatrix(Background.Tile)));
+                    .Texture(Root.GetTileSheet(Background.Sheet).TileMatrix(Background.Tile, Background.Dimensions.X, Background.Dimensions.Y)));
 
             if (!String.IsNullOrEmpty(Border))
             {
                 //Create a 'scale 9' background 
                 result.Add(
-                    Mesh.CreateScale9Background(Rect, Root.TileSheets[Border])
+                    Mesh.CreateScale9Background(Rect, Root.GetTileSheet(Border))
                     .Colorize(BackgroundColor));
             }
 
@@ -210,7 +268,7 @@ namespace Gum
                 var stringMesh = Mesh.CreateStringMesh(
                     Text,
                     font,
-                    new Vector2(font.TileWidth * textSize, font.TileHeight * textSize),
+                    new Vector2(font.TileWidth * PixelPerfectTextSize, font.TileHeight * PixelPerfectTextSize),
                     out stringMeshSize)
                     .Colorize(TextColor);
 
@@ -244,21 +302,25 @@ namespace Gum
                         break;
                 }
 
-                stringMesh.Transform(Matrix.CreateTranslation(textDrawPos.X, textDrawPos.Y, 0.0f));
+                stringMesh.Translate(textDrawPos.X, textDrawPos.Y);
                 result.Add(stringMesh);
             }
 
             return Mesh.Merge(result.ToArray());
         }
 
-        public Mesh PrepareRenderMesh()
+        /// <summary>
+        /// Get the render mesh to draw this widget.
+        /// </summary>
+        /// <returns></returns>
+        public Mesh GetRenderMesh()
         {
             if (CachedRenderMesh == null)
             {
                 var r = new Mesh[1 + Children.Count];
                 r[0] = Redraw();
                 for (var i = 0; i < Children.Count; ++i)
-                    r[i + 1] = Children[i].PrepareRenderMesh();
+                    r[i + 1] = Children[i].GetRenderMesh();
                 CachedRenderMesh = Mesh.Merge(r);
             }
 
