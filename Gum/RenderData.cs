@@ -43,6 +43,8 @@ namespace Gum
             // Create the atlas texture
             Texture = new Texture2D(Device, atlas.Dimensions.Width, atlas.Dimensions.Height);
 
+            TileSheets = new Dictionary<String, TileSheet>();
+
             foreach (var texture in atlas.Textures)
             {
                 // Copy source texture into the atlas
