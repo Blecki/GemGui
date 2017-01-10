@@ -303,18 +303,25 @@ namespace Gum
             if (FocusItem != null) SafeCall(FocusItem.OnUpdateWhileFocus, FocusItem);
         }
 
+        public void Draw()
+        {
+            Draw(Point.Zero);
+        }
+
         /// <summary>
         /// Draw the GUI using the device provided earlier. Depth testing should be off.
         /// </summary>
-        public void Draw()
+        public void Draw(Point Offset)
         {
+            RenderData.Device.DepthStencilState = DepthStencilState.None;
+
             RenderData.Effect.CurrentTechnique = RenderData.Effect.Techniques[0];
 
             RenderData.Effect.Parameters["View"].SetValue(Matrix.Identity);
 
             RenderData.Effect.Parameters["Projection"].SetValue(
-                Matrix.CreateOrthographicOffCenter(0, RenderData.Device.Viewport.Width,
-                RenderData.Device.Viewport.Height, 0, -32, 32));
+                Matrix.CreateOrthographicOffCenter(Offset.X, Offset.X + RenderData.Device.Viewport.Width,
+                Offset.Y + RenderData.Device.Viewport.Height, Offset.Y, -32, 32));
 
             var scale = RealScreen.Width / VirtualScreen.Width;
 
