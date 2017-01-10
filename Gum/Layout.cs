@@ -15,11 +15,11 @@ namespace Gum
         /// </summary>
         public void Layout()
         {
+            Root.SafeCall(this.OnLayout, this);
             var inside = GetDrawableInterior().Interior(0, TopMargin, 0, 0);
             foreach (var child in Children)
                 inside = LayoutChild(inside, Padding, child);
             Invalidate();
-            Root.SafeCall(this.OnLayout, this);
         }
 
         private static int Clamp(int What, int Min, int Max)
