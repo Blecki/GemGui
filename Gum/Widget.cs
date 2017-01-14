@@ -179,6 +179,11 @@ namespace Gum
             Invalidate();
         }
 
+        public Widget GetChild(int ID)
+        {
+            return Children[ID];
+        }
+
         public void Clear()
         {
             foreach (var child in Children)
