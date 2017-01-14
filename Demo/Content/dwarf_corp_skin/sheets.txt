@@ -61,6 +61,12 @@
 			"TileHeight": 24
 		},
 		{
+			"Name": "horizontal-slider",
+			"Texture": "Content/dwarf_corp_skin/slider",
+			"TileWidth": 24,
+			"TileHeight": 24
+		},
+		{
 			"Name": "combo-down",
 			"Texture": "Content/dwarf_corp_skin/down",
 			"TileWidth": 16,

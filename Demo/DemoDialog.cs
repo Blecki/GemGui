@@ -29,9 +29,9 @@ namespace GemGuiTest
                 AutoLayout = AutoLayout.FloatBottomRight
             });
 
-            AddChild(new Gum.Widgets.EditableTextField
+            AddChild(new Gum.Widgets.HorizontalSlider
             {
-                Text = "edit me",
+                ScrollArea = 100,
                 AutoLayout = AutoLayout.DockTop
             });
 

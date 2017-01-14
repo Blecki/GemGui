@@ -69,6 +69,7 @@
     <Compile Include="Widgets\TextGrid.cs" />
     <Compile Include="Widgets\EditableTextField.cs" />
     <Compile Include="Widgets\ListView.cs" />
+    <Compile Include="Widgets\HorizontalSlider.cs" />
     <Compile Include="Widgets\VerticalScrollBar.cs" />
   </ItemGroup>
   <ItemGroup>
