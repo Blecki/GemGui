@@ -19,6 +19,7 @@ namespace Gum
         public AutoLayout AutoLayout = AutoLayout.None;
         public int Padding = 2;
         public int TopMargin = 0;
+        public int BottomMargin = 0;
 
         #endregion
 
@@ -28,6 +29,9 @@ namespace Gum
         /// If transparent, this widget is not drawn. Children may still be drawn.
         /// </summary>
         public bool Transparent = false;
+
+        // If Hidden, widget is not drawn and does not interact.
+        public bool Hidden = false;
 
         private Vector4? _backgroundColor = null;
         public Vector4 BackgroundColor
@@ -134,7 +138,7 @@ namespace Gum
 
         public Widget FindWidgetAt(int x, int y)
         {
-            foreach (var child in Children.Reverse<Widget>())
+            foreach (var child in Children.Reverse<Widget>().Where(c => !c.Hidden))
             {
                 var item = child.FindWidgetAt(x, y);
                 if (item != null) return item;
@@ -147,7 +151,7 @@ namespace Gum
         public void Invalidate()
         {
             CachedRenderMesh = null;
-            if (Parent != null) Parent.Invalidate();
+            if (!Hidden && Parent != null) Parent.Invalidate();
         }
 
         public Widget AddChild(Widget child)
@@ -251,6 +255,8 @@ namespace Gum
         /// <returns></returns>
         protected virtual Mesh Redraw()
         {
+            if (Hidden) throw new InvalidOperationException();
+
             if (Transparent)
                 return Mesh.EmptyMesh();
 
@@ -327,6 +333,8 @@ namespace Gum
         /// <returns></returns>
         public Mesh GetRenderMesh()
         {
+            if (Hidden) return Mesh.EmptyMesh();
+
             if (CachedRenderMesh == null)
             {
                 var r = new Mesh[1 + Children.Count];

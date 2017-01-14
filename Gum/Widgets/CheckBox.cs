@@ -13,8 +13,10 @@ namespace Gum.Widgets
         public bool CheckState 
         {
             get { return _checkState; }
-            set { _checkState = value; Invalidate(); }
+            set { _checkState = value; Root.SafeCall(OnCheckStateChange, this); Invalidate(); }
         }
+
+        public Action<Widget> OnCheckStateChange = null;
 
         public override void Construct()
         {

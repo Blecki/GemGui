@@ -26,12 +26,12 @@ namespace Gum.Widgets
             var gridW = (int)(interior.Width / (font.TileWidth * PixelPerfectTextSize));
             var gridH = (int)(interior.Height / (font.TileHeight * PixelPerfectTextSize));
 
-            var realX = interior.X + (interior.Width / 2) - ((font.TileWidth * PixelPerfectTextSize) / 2);
-            var realY = interior.Y + (interior.Height / 2) - ((font.TileHeight * PixelPerfectTextSize) / 2);
+            var realX = interior.X + (interior.Width / 2) - ((font.TileWidth * PixelPerfectTextSize * gridW) / 2);
+            var realY = interior.Y + (interior.Height / 2) - ((font.TileHeight * PixelPerfectTextSize * gridH) / 2);
 
             var quads = new List<Mesh>();
-            for (var x = 0; x < gridW; ++x)
-                for (var y = 0; y < gridH; ++y)
+            for (var y = 0; y < gridH; ++y)
+                for (var x = 0; x < gridW; ++x)
                     quads.Add(Mesh.Quad()
                         .Scale(font.TileWidth * PixelPerfectTextSize, font.TileHeight * PixelPerfectTextSize)
                         .Translate((x * font.TileWidth * PixelPerfectTextSize) + realX,
@@ -52,6 +52,7 @@ namespace Gum.Widgets
 
             var font = Root.GetTileSheet(Font);
             GridMesh.Texture(font.TileMatrix(C - ' '), Index * 4, 4);
+            GridMesh.Colorize(TextColor, Index * 4, 4);
         }
 
         public void SetString(String S)

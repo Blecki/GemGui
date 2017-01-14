@@ -11,6 +11,16 @@ namespace Gum.Widgets
     {
         private int CursorPosition = 0;
 
+        public Action<Widget> OnTextChange = null;
+
+        public class BeforeTextChangeEventArgs
+        {
+            public String NewText;
+            public bool Cancelled = false;
+        }
+
+        public Action<Widget, BeforeTextChangeEventArgs> BeforeTextChange = null;
+
         public override void Construct()
         {
             if (String.IsNullOrEmpty(Border)) Border = "border-thin";
@@ -50,13 +60,35 @@ namespace Gum.Widgets
             OnKeyPress += (sender, args) =>
                 {
                     // Actual logic of modifying the string is outsourced.
-                    Text = TextFieldLogic.Process(Text, CursorPosition, args.KeyValue, out CursorPosition);
-                    Invalidate();
+                    var beforeEventArgs = new BeforeTextChangeEventArgs
+                        {
+                            NewText = TextFieldLogic.Process(Text, CursorPosition, args.KeyValue, out CursorPosition),
+                            Cancelled = false
+                        };
+                    Root.SafeCall(BeforeTextChange, this, beforeEventArgs);
+                    if (beforeEventArgs.Cancelled == false)
+                    {
+                        Text = beforeEventArgs.NewText;
+                        Root.SafeCall(OnTextChange, this);
+                        Invalidate();
+                    }
                 };
 
             OnKeyDown += (sender, args) =>
                 {
-                    Text = TextFieldLogic.HandleSpecialKeys(Text, CursorPosition, args.KeyValue, out CursorPosition);
+                    var beforeEventArgs = new BeforeTextChangeEventArgs
+                        {
+                            NewText = TextFieldLogic.HandleSpecialKeys(Text, CursorPosition, args.KeyValue, out CursorPosition),
+                            Cancelled = false
+                        };
+                    Root.SafeCall(BeforeTextChange, this, beforeEventArgs);
+                    if (beforeEventArgs.Cancelled == false)
+                    {
+                        Text = beforeEventArgs.NewText;
+                        Root.SafeCall(OnTextChange, this);
+                        Invalidate();
+                    }
+                    Root.SafeCall(OnTextChange, this);
                     Invalidate();
                 };
         }

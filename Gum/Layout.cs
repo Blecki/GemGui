@@ -13,10 +13,10 @@ namespace Gum
         /// Run the layout engine on this widget and all children.
         /// Warning: This operation invalidates the entire tree and potentially moves all children widgets.
         /// </summary>
-        public void Layout()
+        public virtual void Layout()
         {
             Root.SafeCall(this.OnLayout, this);
-            var inside = GetDrawableInterior().Interior(0, TopMargin, 0, 0);
+            var inside = GetDrawableInterior().Interior(0, TopMargin, 0, BottomMargin);
             foreach (var child in Children)
                 inside = LayoutChild(inside, Padding, child);
             Invalidate();

@@ -87,6 +87,21 @@ namespace GemGuiTest
 
             frame.AddChild(new Widget
             {
+                Text = "View Tab Pane",
+                Border = "border-thin",
+                OnClick = (sender, args) =>
+                {
+                    var dialog = GuiRoot.ConstructWidget(new TabDialog());
+                    GuiRoot.ShowDialog(dialog);
+                },
+                TextHorizontalAlign = HorizontalAlign.Center,
+                TextVerticalAlign = VerticalAlign.Center,
+                TextSize = 1.5f,
+                AutoLayout = AutoLayout.DockTop
+            });
+
+            frame.AddChild(new Widget
+            {
                 Text = "Toggle Alignment",
                 Border = "border-thin",
                 OnClick = (sender, args) =>

@@ -76,6 +76,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TabDialog.cs" />
     <Compile Include="DemoDialog.cs" />
     <Compile Include="GumInputMapper.cs" />
     <Compile Include="Main.cs" />

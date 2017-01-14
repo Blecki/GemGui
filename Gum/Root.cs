@@ -17,6 +17,7 @@ namespace Gum
     {
         public RenderData RenderData { get; private set; }
 
+        // Todo: Hilite hover item, indicating it is interactive. Logic properly belongs in a widget.
         public Widget HoverItem { get; private set; }
         public Widget FocusItem { get; private set; }
 
@@ -199,10 +200,11 @@ namespace Gum
         /// Shortcut to call an action without having to check for null.
         /// </summary>
         /// <param name="Action"></param>
-        internal void SafeCall(Action<Widget, InputEventArgs> Action, Widget Widget, InputEventArgs Args)
+        internal void SafeCall<T>(Action<Widget, T> Action, Widget Widget, T Args)
         {
             if (Action != null) Action(Widget, Args);
         }
+
 
         /// <summary>
         /// Shortcut to call an action without having to check for null.

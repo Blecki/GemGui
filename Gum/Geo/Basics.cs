@@ -76,6 +76,13 @@ namespace Gum
             return this;
         }
 
+        public Mesh Colorize(Vector4 Color, int StartIndex, int Count)
+        {
+            for (int i = StartIndex; i < verticies.Length && i < StartIndex + Count; ++i)
+                verticies[i].Color = Color;
+            return this;
+        }
+
         public Mesh Morph(Func<Vector3, Vector3> func)
         {
             for (int i = 0; i < verticies.Length; ++i)
