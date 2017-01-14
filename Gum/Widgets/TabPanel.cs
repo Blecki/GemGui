@@ -18,10 +18,15 @@ namespace Gum.Widgets
         public int SelectedTab
         {
             get { return _selectedTab; }
-            set 
-            { 
-                _selectedTab = value; 
-                if (Root != null) 
+            set
+            {
+                _selectedTab = value;
+
+                foreach (var child in Children)
+                    child.Hidden = true;
+                Children[_selectedTab].Hidden = false;
+
+                if (Root != null)
                     Root.SafeCall(OnSelectedTabChanged, this);
                 Invalidate();
             }
@@ -57,9 +62,7 @@ namespace Gum.Widgets
                         var tabLength = Root.GetTileSheet(Font).TileWidth * PixelPerfectTextSize * tab.Length;
                         if (realPoint.X < tabLength)
                         {
-                            foreach (var child in Children)
-                                child.Hidden = true;
-                            Children[tabIndex].Hidden = false;
+                            SelectedTab = tabIndex;
                             break;
                         }
 
