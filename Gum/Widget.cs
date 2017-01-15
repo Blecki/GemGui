@@ -20,6 +20,8 @@ namespace Gum
         public Margin Padding = Margin.Zero;
         public Margin InteriorMargin = Margin.Zero;
         // Todo: Exterior margin
+        
+        // Todo: Hover styling.
 
         #endregion
 

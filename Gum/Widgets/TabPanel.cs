@@ -108,17 +108,17 @@ namespace Gum.Widgets
 
             var interior = GetDrawableInterior();
             var tx = interior.X;
-            foreach (var tab in TabNames)
+            for (int i = 0; i < TabNames.Count; ++i)
             {
                 var stringMeshSize = new Rectangle();
                 var font = Root.GetTileSheet(Font);
                 var textSize = TextSize;
                 var stringMesh = Mesh.CreateStringMesh(
-                    tab,
+                    TabNames[i],
                     font,
                     new Vector2(font.TileWidth * PixelPerfectTextSize, font.TileHeight * PixelPerfectTextSize),
                     out stringMeshSize)
-                    .Colorize(TextColor)
+                    .Colorize(i == SelectedTab ? SelectedTabColor : TextColor)
                     .Translate(tx, interior.Y);
                 meshes.Add(stringMesh);
                 tx += stringMeshSize.Width + TabPadding;

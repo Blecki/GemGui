@@ -76,6 +76,7 @@ namespace Gum.Widgets
             else ScrollBar.ScrollArea = Items.Count - itemsThatFit + 1;
 
             var topItem = ScrollBar.ScrollPosition;
+            if (topItem < 0) topItem = 0;
 
             var stringPos = drawableInterior.Y;
             var meshes = new List<Mesh>();
