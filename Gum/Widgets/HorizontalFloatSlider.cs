@@ -6,17 +6,17 @@ using Microsoft.Xna.Framework;
 
 namespace Gum.Widgets
 {
-    public class HorizontalSlider : Widget
+    public class HorizontalFloatSlider : Widget
     {
-        private int _scrollArea;
-        public int ScrollArea
+        private float _scrollArea;
+        public float ScrollArea
         {
             get { return _scrollArea; }
             set { _scrollArea = value; AfterScroll(); }
         }
 
-        private int _scrollPosition;
-        public int ScrollPosition
+        private float _scrollPosition;
+        public float ScrollPosition
         {
             get { return _scrollPosition; }
             set { _scrollPosition = value; AfterScroll(); }
@@ -24,8 +24,8 @@ namespace Gum.Widgets
 
         public float ScrollPercentage
         {
-            get { return _scrollArea == 0 ? 0.0f : ((float)_scrollPosition / (float)_scrollArea); }
-            set { _scrollPosition = (int)(_scrollArea * value); AfterScroll(); }
+            get { return _scrollArea == 0 ? 0.0f : (_scrollPosition / _scrollArea); }
+            set { _scrollPosition = (_scrollArea * value); AfterScroll(); }
         }
 
         public int EndBufferSize = 12;

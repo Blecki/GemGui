@@ -86,6 +86,7 @@
     <Compile Include="Widgets\CheckBox.cs" />
     <Compile Include="Widgets\ComboBox.cs" />
     <Compile Include="Widgets\EditableTextField.cs" />
+    <Compile Include="Widgets\HorizontalFloatSlider.cs" />
     <Compile Include="Widgets\HorizontalSlider.cs" />
     <Compile Include="Widgets\TabPanel.cs" />
     <Compile Include="Widgets\ListView.cs" />
