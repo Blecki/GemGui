@@ -20,6 +20,7 @@ namespace Gum
         public int Padding = 2;
         public int TopMargin = 0;
         public int BottomMargin = 0;
+        // Todo: Better margin management. Also, padding goes inside - margins go outside!
 
         #endregion
 

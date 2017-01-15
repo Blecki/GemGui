@@ -26,6 +26,7 @@ namespace Gum
         public int ScaleRatio { get; private set; }
         public Widget RootItem { get; private set; }
         public Widget PopupItem { get; private set; }
+        public bool DestroyPopupOnOffClick { get; private set; }
         public Widget TooltipItem { get; private set; }
 
         public MousePointer MousePointer = null;
@@ -150,7 +151,7 @@ namespace Gum
         /// Show a widget as a popup. Replaces any existing popup widget already displayed.
         /// </summary>
         /// <param name="Popup"></param>
-        public void ShowPopup(Widget Popup)
+        public void ShowPopup(Widget Popup, bool DestroyOnOffClick)
         {
             if (PopupItem != null)
             {
@@ -159,6 +160,7 @@ namespace Gum
             }
 
             PopupItem = Popup;
+            DestroyPopupOnOffClick = DestroyOnOffClick;
             RootItem.AddChild(PopupItem);
         }
 
@@ -261,9 +263,12 @@ namespace Gum
                             // Could have clicked a child of the popup.
                             if (HoverItem == null || !HoverItem.IsChildOf(PopupItem))
                             {
-                                SafeCall(PopupItem.OnPopupClose, PopupItem);
-                                DestroyWidget(PopupItem);
-                                PopupItem = null;
+                                if (DestroyPopupOnOffClick)
+                                {
+                                    SafeCall(PopupItem.OnPopupClose, PopupItem);
+                                    DestroyWidget(PopupItem);
+                                    PopupItem = null;
+                                }
                             }
                         }
 

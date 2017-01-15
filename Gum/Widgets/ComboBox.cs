@@ -92,7 +92,7 @@ namespace Gum.Widgets
                                 };
 
                             SelectorPopup = listView;
-                            Root.ShowPopup(SelectorPopup);
+                            Root.ShowPopup(SelectorPopup, true);
                         }
                     }
                 };
