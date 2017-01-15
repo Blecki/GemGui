@@ -258,22 +258,21 @@ namespace Gum
                     {
                         MousePosition = ScreenPointToGuiPoint(new Point(Args.X, Args.Y));
                         var newArgs = new InputEventArgs { X = MousePosition.X, Y = MousePosition.Y };
-                        
-                        if (!Object.ReferenceEquals(HoverItem, PopupItem) && PopupItem != null) // Clicked off popup item.
+
+                        if (PopupItem != null)
                         {
-                            // Could have clicked a child of the popup.
-                            if (HoverItem == null || !HoverItem.IsChildOf(PopupItem))
+                            if (HoverItem == null || (!Object.ReferenceEquals(HoverItem, PopupItem) && 
+                                !HoverItem.IsChildOf(PopupItem)))
                             {
                                 if (DestroyPopupOnOffClick)
                                 {
                                     SafeCall(PopupItem.OnPopupClose, PopupItem);
                                     DestroyWidget(PopupItem);
                                     PopupItem = null;
-                                    
                                 }
-                            }
 
-                            return;
+                                return;
+                            }
                         }
 
                         if (HoverItem != null)
