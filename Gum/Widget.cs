@@ -240,11 +240,11 @@ namespace Gum
         public virtual Point GetBestSize()
         {
             var size = new Point(0, 0);
+
             if (!String.IsNullOrEmpty(Text))
             {
                 var font = Root.GetTileSheet(Font);
-                size = new Point(font.TileWidth * IntegerTextSize * Text.Length,
-                    font.TileHeight * IntegerTextSize);
+                size = font.MeasureString(Text).Scale(IntegerTextSize);
             }
 
             if (!String.IsNullOrEmpty(Border))
@@ -290,7 +290,6 @@ namespace Gum
             {
                 var stringMeshSize = new Rectangle();
                 var font = Root.GetTileSheet(Font);
-                var textSize = TextSize;
                 var stringMesh = Mesh.CreateStringMesh(
                     Text,
                     font,

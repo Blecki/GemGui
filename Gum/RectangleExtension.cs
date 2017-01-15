@@ -25,6 +25,11 @@ namespace Gum
         {
             return R.Interior(M.Left, M.Top, M.Right, M.Bottom);
         }
+
+        public static Point Scale(this Point p, int S)
+        {
+            return new Point(p.X * S, p.Y * S);
+        }
     }
 }
 

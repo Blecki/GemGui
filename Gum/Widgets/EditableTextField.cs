@@ -35,13 +35,32 @@ namespace Gum.Widgets
                     if (Object.ReferenceEquals(this, Root.FocusItem))
                     {
                         // This widget already has focus - move cursor to click position.
-                        var clickedChar = (float)(args.X - this.GetDrawableInterior().X) / (float)(Root.GetTileSheet(Font).TileWidth * TextSize);
-                        if (clickedChar > Text.Length)
-                            CursorPosition = Text.Length;
-                        else if (clickedChar <= 0)
-                            CursorPosition = 0;
-                        else
-                            CursorPosition = (int)Math.Round(clickedChar);
+
+                        var clickIndex = 0;
+                        var clickX = args.X - this.GetDrawableInterior().X;
+                        var searchIndex = 0;
+                        var font = Root.GetTileSheet(Font);
+                        
+                        while (true)
+                        {
+                            if (searchIndex == Text.Length)
+                            {
+                                clickIndex = Text.Length;
+                                break;
+                            }
+
+                            var glyphSize = font.GlyphSize(Text[searchIndex] - ' ');
+                            if (clickX < glyphSize.X)
+                            {
+                                clickIndex = searchIndex;
+                                if (clickX > (glyphSize.X / 2)) clickIndex += 1;
+                                break;
+                            }
+
+                            clickX -= glyphSize.X;
+                            searchIndex += 1;
+                        }
+                        
                         Invalidate();
                     }
                     else
@@ -102,12 +121,15 @@ namespace Gum.Widgets
                 {
                     var font = Root.GetTileSheet(Font);
                     var drawableArea = this.GetDrawableInterior();
+
+                    var pipeGlyph = font.GlyphSize('|' - ' ');
                     var cursorMesh = Mesh.Quad()
-                        .Scale(font.TileWidth * TextSize, font.TileHeight * TextSize)
-                        .Translate(
-                            drawableArea.X + (CursorPosition * font.TileWidth * TextSize) - ((font.TileWidth * TextSize) / 2),
-                            drawableArea.Y + ((drawableArea.Height - (font.TileHeight * TextSize)) / 2))
-                        .Texture(Root.GetTileSheet(Font).TileMatrix((int)('|' - ' ')))
+                        .Scale(pipeGlyph.X * TextSize, pipeGlyph.Y * TextSize)
+                        .Translate(drawableArea.X 
+                            + font.MeasureString(Text.Substring(0, CursorPosition)).X * TextSize 
+                            - ((pipeGlyph.X * TextSize) / 2),
+                            drawableArea.Y + ((drawableArea.Height - (pipeGlyph.Y * TextSize)) / 2))
+                        .Texture(font.TileMatrix((int)('|' - ' ')))
                         .Colorize(new Vector4(1, 0, 0, 1));
                     return Mesh.Merge(base.Redraw(), cursorMesh);
                 }

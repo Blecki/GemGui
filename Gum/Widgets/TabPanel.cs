@@ -55,11 +55,12 @@ namespace Gum.Widgets
                     var interior = GetDrawableInterior();
                     var realPoint = new Point(args.X - interior.X, args.Y - interior.Y);
                     if (realPoint.Y > InteriorMargin.Top) return;
+                    var font = Root.GetTileSheet(Font);
 
                     var tabIndex = 0;
                     foreach (var tab in TabNames)
                     {
-                        var tabLength = Root.GetTileSheet(Font).TileWidth * PixelPerfectTextSize * tab.Length;
+                        var tabLength = font.MeasureString(tab).X * PixelPerfectTextSize;
                         if (realPoint.X < tabLength)
                         {
                             SelectedTab = tabIndex;
@@ -112,7 +113,6 @@ namespace Gum.Widgets
             {
                 var stringMeshSize = new Rectangle();
                 var font = Root.GetTileSheet(Font);
-                var textSize = TextSize;
                 var stringMesh = Mesh.CreateStringMesh(
                     TabNames[i],
                     font,
