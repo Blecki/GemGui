@@ -136,6 +136,7 @@ namespace Gum
         {
             CleanupWidget(Widget);
             if (Widget.Parent != null) Widget.Parent.RemoveChild(Widget);
+            SafeCall(Widget.OnClose, Widget);
         }            
 
         /// <summary>

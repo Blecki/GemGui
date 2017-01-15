@@ -114,6 +114,7 @@ namespace Gum
         public Action<Widget> OnPopupClose = null;
         public Action<Widget> OnUpdateWhileFocus = null;
         public Action<Widget> OnLayout = null;
+        public Action<Widget> OnClose = null;
 
         #endregion
 
