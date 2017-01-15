@@ -269,8 +269,11 @@ namespace Gum
                                     SafeCall(PopupItem.OnPopupClose, PopupItem);
                                     DestroyWidget(PopupItem);
                                     PopupItem = null;
+                                    
                                 }
                             }
+
+                            return;
                         }
 
                         if (HoverItem != null)
