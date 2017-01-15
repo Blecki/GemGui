@@ -32,9 +32,10 @@ namespace Gum.Widgets
 
         private void AfterScroll()
         {
-            if (_scrollPosition < 0) _scrollPosition = 0;
+            if (_scrollArea < 0) _scrollArea = 0;
             if (_scrollPosition >= _scrollArea) _scrollPosition = _scrollArea - 1;
-
+            if (_scrollPosition < 0) _scrollPosition = 0;
+            
             Invalidate();
 
             // Could be called during construction - before Root is set.
