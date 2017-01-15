@@ -84,7 +84,7 @@ namespace Gum.Widgets
             Rectangle toss;
             for (int i = 0; i < itemsThatFit && (topItem + i) < Items.Count; ++i)
             {
-                meshes.Add(Mesh.CreateStringMesh(Items[topItem + i], font, new Vector2(font.TileWidth * PixelPerfectTextSize, font.TileHeight * PixelPerfectTextSize), out toss)
+                meshes.Add(Mesh.CreateStringMesh(Items[topItem + i], font, new Vector2(PixelPerfectTextSize, PixelPerfectTextSize), out toss)
                     .Translate(drawableInterior.X, stringPos)
                     .Colorize(topItem + i == SelectedIndex ? SelectedTextColor : TextColor));
                 stringPos += (font.TileHeight * IntegerTextSize) + 2;

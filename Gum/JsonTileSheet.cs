@@ -10,12 +10,19 @@ using System.Threading.Tasks;
 
 namespace Gum
 {
+    public enum JsonTileSheetType
+    {
+        VariableWidthFont,
+        TileSheet
+    }
+
     public class JsonTileSheet
     {
         public String Name;
         public String Texture;
         public int TileWidth;
         public int TileHeight;
+        public JsonTileSheetType Type = JsonTileSheetType.TileSheet;
     }
     
     public class JsonTileSheetSet

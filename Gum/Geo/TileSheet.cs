@@ -11,7 +11,7 @@ namespace Gum
     /// Calculates UV transformation matricies for tiles inside a tilesheet, that is itself a portion
     /// of a larger texture atlas.
     /// </summary>
-    public class TileSheet
+    public class TileSheet : ITileSheet
     {
         public int TextureWidth { get; private set; }
         public int TextureHeight { get; private set; }
@@ -43,6 +43,7 @@ namespace Gum
         {
             return Matrix.CreateScale(ColumnSpan, RowSpan, 1.0f) * TileMatrix(TileIndex);
         }
+
         public Matrix TileMatrix(int Column, int Row, int ColumnSpan, int RowSpan)
         {
             return Matrix.CreateScale(ColumnSpan, RowSpan, 1.0f) * TileMatrix(Column, Row);
@@ -55,6 +56,16 @@ namespace Gum
             this.TileWidth = TileWidth;
             this.TileHeight = TileHeight;
             this.SourceRect = Source;
+        }
+
+        public Point GlyphSize(int Index)
+        {
+            return new Point(TileWidth, TileHeight);
+        }
+
+        public Point MeasureString(String S)
+        {
+            return new Point(S.Length * TileWidth, TileHeight);
         }
     }
 }

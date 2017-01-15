@@ -11,8 +11,8 @@ namespace Gum
     {
         public static Mesh CreateStringMesh(
             String String, 
-            TileSheet FontSheet, 
-            Vector2 GlyphSize,
+            ITileSheet FontSheet, 
+            Vector2 GlyphScale,
             out Rectangle Bounds)
         {
             var glyphMeshes = new List<Mesh>();
@@ -20,14 +20,15 @@ namespace Gum
 
             foreach (var c in String)
             {
+                var glyphSize = FontSheet.GlyphSize(c - ' ');
                 glyphMeshes.Add(Mesh.Quad()
                     .Texture(FontSheet.TileMatrix(c - ' '))
-                    .Scale(GlyphSize.X, GlyphSize.Y)
+                    .Scale(glyphSize.X * GlyphScale.X, glyphSize.Y * GlyphScale.Y)
                     .Translate(pos.X, pos.Y));
-                pos.X += GlyphSize.X;
+                pos.X += glyphSize.X * GlyphScale.X;
             }
 
-            Bounds = new Rectangle(0, 0, (int)pos.X, (int)(pos.Y + GlyphSize.Y));
+            Bounds = new Rectangle(0, 0, (int)pos.X, (int)(FontSheet.TileHeight * GlyphScale.Y));
 
             return Merge(glyphMeshes.ToArray());
         }

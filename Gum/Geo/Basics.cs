@@ -63,7 +63,7 @@ namespace Gum
             return this;
         }
 
-        public Mesh TileScaleAndTexture(TileSheet Sheet, int T)
+        public Mesh TileScaleAndTexture(ITileSheet Sheet, int T)
         {
             return this.Scale(Sheet.TileWidth, Sheet.TileHeight)
                 .Texture(Sheet.TileMatrix(T));

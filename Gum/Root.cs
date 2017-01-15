@@ -99,10 +99,11 @@ namespace Gum
         /// </summary>
         /// <param name="Name"></param>
         /// <returns></returns>
-        public TileSheet GetTileSheet(String Name)
+        public ITileSheet GetTileSheet(String Name)
         {
             return RenderData.TileSheets[Name];
         }
+
 
         /// <summary>
         /// Widgets must be constructed or some operations will fail. Use this function to construct a widget 

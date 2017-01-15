@@ -53,9 +53,10 @@ namespace GemGuiTest
                     AutoLayout = AutoLayout.FloatCenter,
                     InteriorMargin = new Margin
                     {
-                        Top = GuiRoot.GetTileSheet("font").TileHeight * 2
+                        Top = GuiRoot.GetTileSheet("font2").TileHeight * 2
                     },
-                    Padding = new Margin(2,2,2,2)
+                    Padding = new Margin(2,2,2,2),
+                    Font = "font2"
                 });
             
             frame.AddChild(new Widget
@@ -71,7 +72,8 @@ namespace GemGuiTest
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
                 TextSize = 2,
-                AutoLayout = AutoLayout.DockTop
+                AutoLayout = AutoLayout.DockTop,
+                Font = "font2"
             });
 
             frame.AddChild(new Widget
@@ -86,7 +88,8 @@ namespace GemGuiTest
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
                 TextSize = 2,
-                AutoLayout = AutoLayout.DockTop
+                AutoLayout = AutoLayout.DockTop,
+                Font = "font2"
             });
 
             frame.AddChild(new Widget
@@ -101,7 +104,8 @@ namespace GemGuiTest
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
                 TextSize = 2,
-                AutoLayout = AutoLayout.DockTop
+                AutoLayout = AutoLayout.DockTop,
+                Font = "font2"
             });
 
             frame.AddChild(new Widget
@@ -125,7 +129,8 @@ namespace GemGuiTest
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
                 TextSize = 2,
-                AutoLayout = AutoLayout.DockTop
+                AutoLayout = AutoLayout.DockTop,
+                Font = "font2"
             });
 
             GuiRoot.RootItem.Layout();         

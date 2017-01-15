@@ -18,7 +18,7 @@ namespace Gum
         public GraphicsDevice Device { get; private set; }
         public Effect Effect { get; private set; }
         public Texture2D Texture { get; private set; }
-        public Dictionary<String, TileSheet> TileSheets { get; private set; }
+        public Dictionary<String, ITileSheet> TileSheets { get; private set; }
 
         public RenderData(GraphicsDevice Device, ContentManager Content, String Effect, String Skin)
         {
@@ -43,7 +43,7 @@ namespace Gum
             // Create the atlas texture
             Texture = new Texture2D(Device, atlas.Dimensions.Width, atlas.Dimensions.Height);
 
-            TileSheets = new Dictionary<String, TileSheet>();
+            TileSheets = new Dictionary<String, ITileSheet>();
 
             foreach (var texture in atlas.Textures)
             {
@@ -51,11 +51,30 @@ namespace Gum
                 var realTexture = Content.Load<Texture2D>(texture.Sheet.Texture);
                 var textureData = new Color[realTexture.Width * realTexture.Height];
                 realTexture.GetData(textureData);
+
+                if (texture.Sheet.Type == JsonTileSheetType.VariableWidthFont)
+                {
+                    for (int i = 0; i < textureData.Length; ++i)
+                    {
+                        if (textureData[i].R != 255 ||
+                            textureData[i].G != 255 ||
+                            textureData[i].B != 255)
+                            textureData[i] = new Color(0, 0, 0, 0);
+                    }
+
+                    TileSheets.Upsert(texture.Sheet.Name, new VariableWidthFont(realTexture, Texture.Width,
+                        Texture.Height, texture.Rect));
+                }
+                else
+                {
+                    // Create a tilesheet pointing into the atlas texture.
+                    TileSheets.Upsert(texture.Sheet.Name, new TileSheet(Texture.Width,
+                        Texture.Height, texture.Rect, texture.Sheet.TileWidth, texture.Sheet.TileHeight));
+                }
+
+                // Paste texture data into atlas.
                 Texture.SetData(0, texture.Rect, textureData, 0, realTexture.Width * realTexture.Height);
 
-                // Create a tilesheet pointing into the atlas texture.
-                TileSheets.Upsert(texture.Sheet.Name, new TileSheet(Texture.Width,
-                    Texture.Height, texture.Rect, texture.Sheet.TileWidth, texture.Sheet.TileHeight));
             }
         }
     }

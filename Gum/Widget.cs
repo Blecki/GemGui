@@ -275,7 +275,7 @@ namespace Gum
                     .Scale(Rect.Width, Rect.Height)
                     .Translate(Rect.X, Rect.Y)
                     .Colorize(BackgroundColor)
-                    .Texture(Root.GetTileSheet(Background.Sheet).TileMatrix(Background.Tile, Background.Dimensions.X, Background.Dimensions.Y)));
+                    .Texture(Root.GetTileSheet(Background.Sheet).TileMatrix(Background.Tile)));
 
             if (!String.IsNullOrEmpty(Border))
             {
@@ -294,7 +294,7 @@ namespace Gum
                 var stringMesh = Mesh.CreateStringMesh(
                     Text,
                     font,
-                    new Vector2(font.TileWidth * PixelPerfectTextSize, font.TileHeight * PixelPerfectTextSize),
+                    new Vector2(PixelPerfectTextSize, PixelPerfectTextSize),
                     out stringMeshSize)
                     .Colorize(TextColor);
 

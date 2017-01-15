@@ -116,7 +116,7 @@ namespace Gum.Widgets
                 var stringMesh = Mesh.CreateStringMesh(
                     TabNames[i],
                     font,
-                    new Vector2(font.TileWidth * PixelPerfectTextSize, font.TileHeight * PixelPerfectTextSize),
+                    new Vector2(PixelPerfectTextSize, PixelPerfectTextSize),
                     out stringMeshSize)
                     .Colorize(i == SelectedTab ? SelectedTabColor : TextColor)
                     .Translate(tx, interior.Y);

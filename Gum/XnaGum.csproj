@@ -68,7 +68,9 @@
     <Compile Include="Geo\CreateScale9Background.cs" />
     <Compile Include="Geo\CreateStringMesh.cs" />
     <Compile Include="Geo\Mesh.cs" />
+    <Compile Include="Geo\ITileSheet.cs" />
     <Compile Include="Geo\TileSheet.cs" />
+    <Compile Include="Geo\VariableWidthFont.cs" />
     <Compile Include="HelperExtensions.cs" />
     <Compile Include="JsonTileSheet.cs" />
     <Compile Include="InputEventArgs.cs" />

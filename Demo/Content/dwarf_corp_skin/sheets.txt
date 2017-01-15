@@ -7,6 +7,11 @@
 			"TileHeight": 8
 		},
 		{
+			"Name": "font2",
+			"Texture": "Content/dwarf_corp_skin/font1-w",
+			"Type": "VariableWidthFont"
+		},
+		{
 			"Name": "mouse",
 			"Texture": "Content/dwarf_corp_skin/pointers",
 			"TileWidth": 16,

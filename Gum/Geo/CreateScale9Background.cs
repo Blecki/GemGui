@@ -17,7 +17,7 @@ namespace Gum
         /// <param name="Rect"></param>
         /// <param name="Tiles"></param>
         /// <returns></returns>
-        public static Mesh CreateScale9Background(Rectangle Rect, TileSheet Tiles)
+        public static Mesh CreateScale9Background(Rectangle Rect, ITileSheet Tiles)
         {
             var result = new List<Mesh>();
 
