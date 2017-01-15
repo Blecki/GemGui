@@ -17,10 +17,9 @@ namespace Gum
         public Point MinimumSize = new Point(0, 0);
         public Point MaximumSize = new Point(int.MaxValue, int.MaxValue);
         public AutoLayout AutoLayout = AutoLayout.None;
-        public int Padding = 2;
-        public int TopMargin = 0;
-        public int BottomMargin = 0;
-        // Todo: Better margin management. Also, padding goes inside - margins go outside!
+        public Margin Padding = Margin.Zero;
+        public Margin InteriorMargin = Margin.Zero;
+        // Todo: Exterior margin
 
         #endregion
 

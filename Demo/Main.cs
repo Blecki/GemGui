@@ -49,9 +49,13 @@ namespace GemGuiTest
                     Border = "border-one",
                     TextSize = 2,
                     TextHorizontalAlign = HorizontalAlign.Center,
-                    MinimumSize = new Point(256,256),
+                    MinimumSize = new Point(256, 256),
                     AutoLayout = AutoLayout.FloatCenter,
-                    TopMargin = GuiRoot.GetTileSheet("font").TileHeight * 2
+                    InteriorMargin = new Margin
+                    {
+                        Top = GuiRoot.GetTileSheet("font").TileHeight * 2
+                    },
+                    Padding = new Margin(2,2,2,2)
                 });
             
             frame.AddChild(new Widget
@@ -66,7 +70,7 @@ namespace GemGuiTest
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 1,
+                TextSize = 2,
                 AutoLayout = AutoLayout.DockTop
             });
 
@@ -81,7 +85,7 @@ namespace GemGuiTest
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 1.5f,
+                TextSize = 2,
                 AutoLayout = AutoLayout.DockTop
             });
 
@@ -96,7 +100,7 @@ namespace GemGuiTest
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 1.5f,
+                TextSize = 2,
                 AutoLayout = AutoLayout.DockTop
             });
 
@@ -120,7 +124,7 @@ namespace GemGuiTest
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2.5f,
+                TextSize = 2,
                 AutoLayout = AutoLayout.DockTop
             });
 

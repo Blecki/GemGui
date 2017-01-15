@@ -16,7 +16,7 @@ namespace Gum
         public virtual void Layout()
         {
             Root.SafeCall(this.OnLayout, this);
-            var inside = GetDrawableInterior().Interior(0, TopMargin, 0, BottomMargin);
+            var inside = GetDrawableInterior().Interior(InteriorMargin);
             foreach (var child in Children)
                 inside = LayoutChild(inside, Padding, child);
             Invalidate();
@@ -38,7 +38,7 @@ namespace Gum
 
         // Todo: 'Flow' options. Pack widgets up in rows until full, flow...
         // Must track rects in each corner used for flow.
-        private static Rectangle LayoutChild(Rectangle Inside, int Padding, Widget Child)
+        private static Rectangle LayoutChild(Rectangle Inside, Margin Padding, Widget Child)
         {
             Rectangle newPos;
 
@@ -52,24 +52,24 @@ namespace Gum
                 case AutoLayout.DockTop:
                     size = GetClampedChildSize(Child, new Point(Inside.Width, size.Y));
                     newPos = new Rectangle(Inside.X, Inside.Y, size.X, size.Y);
-                    Inside.Y += size.Y + Padding;
-                    Inside.Height -= size.Y + Padding;
+                    Inside.Y += size.Y + Padding.Top;
+                    Inside.Height -= size.Y + Padding.Top;
                     break;
                 case AutoLayout.DockRight:
                     size = GetClampedChildSize(Child, new Point(size.X, Inside.Height));
                     newPos = new Rectangle(Inside.X + Inside.Width - size.X, Inside.Y, size.X, size.Y);
-                    Inside.Width -= size.X + Padding;
+                    Inside.Width -= size.X + Padding.Right;
                     break;
                 case AutoLayout.DockBottom:
                     size = GetClampedChildSize(Child, new Point(Inside.Width, size.Y));
                     newPos = new Rectangle(Inside.X, Inside.Y + Inside.Height - size.Y, size.X, size.Y);
-                    Inside.Height -= size.Y + Padding;
+                    Inside.Height -= size.Y + Padding.Bottom;
                     break;
                 case AutoLayout.DockLeft:
                     size = GetClampedChildSize(Child, new Point(size.X, Inside.Height));
                     newPos = new Rectangle(Inside.X, Inside.Y, size.X, size.Y);
-                    Inside.X += size.X + Padding;
-                    Inside.Width -= size.X + Padding;
+                    Inside.X += size.X + Padding.Left;
+                    Inside.Width -= size.X + Padding.Left;
                     break;
                 case AutoLayout.DockFill:
                     size = GetClampedChildSize(Child, new Point(Inside.Width, Inside.Height));
@@ -89,42 +89,44 @@ namespace Gum
                 case AutoLayout.FloatTop:
                     size = GetClampedChildSize(Child, size);
                     newPos = new Rectangle(Inside.X + (Inside.Width / 2) - (size.X / 2),
-                        Inside.Y, size.X, size.Y);
+                        Inside.Y + Padding.Top, size.X, size.Y);
                     break;
                 case AutoLayout.FloatBottom:
                     size = GetClampedChildSize(Child, size);
                     newPos = new Rectangle(Inside.X + (Inside.Width / 2) - (size.X / 2),
-                        Inside.Bottom - size.Y, size.X, size.Y);
+                        Inside.Bottom - size.Y - Padding.Bottom, size.X, size.Y);
                     break;
                 case AutoLayout.FloatLeft:
                     size = GetClampedChildSize(Child, size);
-                    newPos = new Rectangle(Inside.X, Inside.Y + (Inside.Height / 2) - (size.Y / 2),
+                    newPos = new Rectangle(Inside.X + Padding.Left, Inside.Y + (Inside.Height / 2) - (size.Y / 2),
                         size.X, size.Y);
                     break;
                 case AutoLayout.FloatRight:
                     size = GetClampedChildSize(Child, size);
-                    newPos = new Rectangle(Inside.Right - size.X,
+                    newPos = new Rectangle(Inside.Right - size.X - Padding.Right,
                         Inside.Y + (Inside.Height / 2) - (size.Y / 2),
                         size.X, size.Y);
                     break;
                 case AutoLayout.FloatTopRight:
                     size = GetClampedChildSize(Child, size);
-                    newPos = new Rectangle(Inside.X + Inside.Width - size.X, Inside.Y, size.X, size.Y);
+                    newPos = new Rectangle(Inside.X + Inside.Width - size.X - Padding.Right, 
+                        Inside.Y + Padding.Top, size.X, size.Y);
                     break;
                 case AutoLayout.FloatTopLeft:
                     size = GetClampedChildSize(Child, size);
-                    newPos = new Rectangle(Inside.X, Inside.Y, size.X, size.Y);
+                    newPos = new Rectangle(Inside.X + Padding.Left, Inside.Y + Padding.Top, size.X, size.Y);
                     break;
                 case AutoLayout.FloatBottomRight:
                     size = GetClampedChildSize(Child, size);
                     newPos = new Rectangle(
-                        Inside.X + Inside.Width - size.X,
-                        Inside.Y + Inside.Height - size.Y, 
+                        Inside.X + Inside.Width - size.X - Padding.Right,
+                        Inside.Y + Inside.Height - size.Y - Padding.Bottom, 
                         size.X, size.Y);
                     break;
                 case AutoLayout.FloatBottomLeft:
                     size = GetClampedChildSize(Child, size);
-                    newPos = new Rectangle(Inside.X, Inside.Y + Inside.Height - size.Y, size.X, size.Y);
+                    newPos = new Rectangle(Inside.X + Padding.Left, 
+                        Inside.Y + Inside.Height - size.Y - Padding.Bottom, size.X, size.Y);
                     break;
                 default:
                     newPos = new Rectangle(0, 0, 0, 0);

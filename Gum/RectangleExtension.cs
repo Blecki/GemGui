@@ -8,7 +8,7 @@ namespace Gum
 {
     public static class RectangleExtension
     {
-        public static Microsoft.Xna.Framework.Rectangle Interior(this Microsoft.Xna.Framework.Rectangle r, int Left, int Top, int Right, int Bottom)
+        public static Rectangle Interior(this Rectangle r, int Left, int Top, int Right, int Bottom)
         {
             return new Microsoft.Xna.Framework.Rectangle(r.X + Left, r.Y + Top,
                 r.Width - Left - Right, r.Height - Top - Bottom);
@@ -19,6 +19,11 @@ namespace Gum
             if (r.X < dim.X) r.X = dim.X;
             if (r.Y < dim.Y) r.Y = dim.Y;
             return r;
+        }
+
+        public static Rectangle Interior(this Rectangle R, Margin M)
+        {
+            return R.Interior(M.Left, M.Top, M.Right, M.Bottom);
         }
     }
 }

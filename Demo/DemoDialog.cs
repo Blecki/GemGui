@@ -16,6 +16,7 @@ namespace GemGuiTest
             Rect = Root.VirtualScreen.Interior(16, 16, 16, 16);
 
             Border = "border-fancy";
+            Padding = new Margin(2, 2, 2, 2);
 
             // Create a close button in the bottom right.
             AddChild(new Widget

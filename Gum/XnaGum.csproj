@@ -73,6 +73,7 @@
     <Compile Include="JsonTileSheet.cs" />
     <Compile Include="InputEventArgs.cs" />
     <Compile Include="Layout.cs" />
+    <Compile Include="Margin.cs" />
     <Compile Include="RectangleExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderData.cs" />

@@ -47,14 +47,14 @@ namespace Gum.Widgets
 
         public override void Construct()
         {
-            if (TopMargin == 0)
-                TopMargin = Root.GetTileSheet(Font).TileHeight * IntegerTextSize;
+            if (InteriorMargin.Top == 0)
+                InteriorMargin.Top = Root.GetTileSheet(Font).TileHeight * IntegerTextSize;
 
             OnClick += (sender, args) =>
                 {
                     var interior = GetDrawableInterior();
                     var realPoint = new Point(args.X - interior.X, args.Y - interior.Y);
-                    if (realPoint.Y > TopMargin) return;
+                    if (realPoint.Y > InteriorMargin.Top) return;
 
                     var tabIndex = 0;
                     foreach (var tab in TabNames)
@@ -74,10 +74,13 @@ namespace Gum.Widgets
                 };
         }
 
+        /// <summary>
+        /// Override layout to disable layout engine on children - just make them fill the space.
+        /// </summary>
         public override void Layout()
         {
             Root.SafeCall(this.OnLayout, this);
-            var interior = GetDrawableInterior().Interior(0, TopMargin, 0, BottomMargin);
+            var interior = GetDrawableInterior().Interior(InteriorMargin);
             foreach (var child in Children)
             {
                 child.Rect = interior;
