@@ -342,7 +342,7 @@ namespace Gum
                 Matrix.CreateTranslation(RealScreen.X, RealScreen.Y, 1.0f)
                 * Matrix.CreateScale(scale)
 #if GEMXNA
-                * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f));
+                * Matrix.CreateTranslation(-0.5f, -0.5f, 0.0f));
 #elif GEMMONO
                 );
 #endif
