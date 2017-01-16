@@ -50,31 +50,31 @@ namespace Gum
                     newPos = Child.Rect;
                     break;
                 case AutoLayout.DockTop:
-                    // Todo: Follow this pattern of padding application in all alignments.
-                    size = GetClampedChildSize(Child, new Point(Inside.Width - Padding.Left - Padding.Right, size.Y));
-                    newPos = new Rectangle(Inside.X + Padding.Left, Inside.Y + Padding.Right, size.X, size.Y);
-                    Inside.Y += size.Y;
-                    Inside.Height -= size.Y;
+                    size = GetClampedChildSize(Child, new Point(Inside.Width - Padding.Horizontal, size.Y));
+                    newPos = new Rectangle(Inside.X + Padding.Left, Inside.Y + Padding.Top, size.X, size.Y);
+                    Inside = Inside.Interior(0, size.Y + Padding.Top, 0, 0);
                     break;
                 case AutoLayout.DockRight:
-                    size = GetClampedChildSize(Child, new Point(size.X, Inside.Height));
-                    newPos = new Rectangle(Inside.X + Inside.Width - size.X, Inside.Y, size.X, size.Y);
-                    Inside.Width -= size.X + Padding.Right;
+                    size = GetClampedChildSize(Child, new Point(size.X, Inside.Height - Padding.Vertical));
+                    newPos = new Rectangle(Inside.Right - size.X - Padding.Right, 
+                        Inside.Y + Padding.Top, size.X, size.Y);
+                    Inside = Inside.Interior(0, 0, size.X + Padding.Right, 0);
                     break;
                 case AutoLayout.DockBottom:
-                    size = GetClampedChildSize(Child, new Point(Inside.Width, size.Y));
-                    newPos = new Rectangle(Inside.X, Inside.Y + Inside.Height - size.Y, size.X, size.Y);
-                    Inside.Height -= size.Y + Padding.Bottom;
+                    size = GetClampedChildSize(Child, new Point(Inside.Width - Padding.Horizontal, size.Y));
+                    newPos = new Rectangle(Inside.X + Padding.Left, 
+                        Inside.Bottom - size.Y - Padding.Bottom, size.X, size.Y);
+                    Inside = Inside.Interior(0, 0, 0, size.Y + Padding.Bottom);
                     break;
                 case AutoLayout.DockLeft:
-                    size = GetClampedChildSize(Child, new Point(size.X, Inside.Height));
-                    newPos = new Rectangle(Inside.X, Inside.Y, size.X, size.Y);
-                    Inside.X += size.X + Padding.Left;
-                    Inside.Width -= size.X + Padding.Left;
+                    size = GetClampedChildSize(Child, new Point(size.X, Inside.Height - Padding.Vertical));
+                    newPos = new Rectangle(Inside.X + Padding.Left, Inside.Y + Padding.Top, size.X, size.Y);
+                    Inside = Inside.Interior(size.X + Padding.Left, 0, 0, 0);
                     break;
                 case AutoLayout.DockFill:
-                    size = GetClampedChildSize(Child, new Point(Inside.Width, Inside.Height));
-                    newPos = new Rectangle(
+                    size = GetClampedChildSize(Child, new Point(
+                        Inside.Width - Padding.Horizontal, Inside.Height - Padding.Vertical));
+                    newPos = new Rectangle(     // Actually just centers widget in space
                         Inside.X + (Inside.Width / 2) - (size.X / 2),
                         Inside.Y + (Inside.Height / 2) - (size.Y / 2),
                         size.X, size.Y);

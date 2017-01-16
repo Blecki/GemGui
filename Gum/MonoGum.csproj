@@ -43,6 +43,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Geo\CreateTabPanelBackground.cs" />
     <Compile Include="Geo\ITileSheet.cs" />
     <Compile Include="Geo\VariableWidthFont.cs" />
     <Compile Include="InputEventArgs.cs" />

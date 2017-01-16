@@ -21,5 +21,8 @@ namespace Gum
             this.Left = Left;
             this.Right = Right;
         }
+
+        public int Vertical { get { return Top + Bottom; } }
+        public int Horizontal { get { return Left + Right; } }
     }
 }

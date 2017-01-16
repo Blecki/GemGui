@@ -17,7 +17,15 @@ namespace Gum
         public Point MinimumSize = new Point(0, 0);
         public Point MaximumSize = new Point(int.MaxValue, int.MaxValue);
         public AutoLayout AutoLayout = AutoLayout.None;
+
+        /// <summary>
+        /// Space to leave between children when laying them out on the widget.
+        /// </summary>
         public Margin Padding = Margin.Zero;
+
+        /// <summary>
+        /// Extra space to leave on the edges of the widget when arranging children.
+        /// </summary>
         public Margin InteriorMargin = Margin.Zero;
         // Todo: Exterior margin
         
