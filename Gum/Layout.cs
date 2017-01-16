@@ -50,10 +50,11 @@ namespace Gum
                     newPos = Child.Rect;
                     break;
                 case AutoLayout.DockTop:
-                    size = GetClampedChildSize(Child, new Point(Inside.Width, size.Y));
-                    newPos = new Rectangle(Inside.X, Inside.Y, size.X, size.Y);
-                    Inside.Y += size.Y + Padding.Top;
-                    Inside.Height -= size.Y + Padding.Top;
+                    // Todo: Follow this pattern of padding application in all alignments.
+                    size = GetClampedChildSize(Child, new Point(Inside.Width - Padding.Left - Padding.Right, size.Y));
+                    newPos = new Rectangle(Inside.X + Padding.Left, Inside.Y + Padding.Right, size.X, size.Y);
+                    Inside.Y += size.Y;
+                    Inside.Height -= size.Y;
                     break;
                 case AutoLayout.DockRight:
                     size = GetClampedChildSize(Child, new Point(size.X, Inside.Height));

@@ -11,7 +11,30 @@ namespace Gum.Widgets
     /// </summary>
     public class TabPanel : Widget
     {
-        public List<String> TabNames = new List<String>();
+        private class TabButton : Widget
+        {
+            protected override Mesh Redraw()
+            {
+                Rectangle drop;
+                var border = Root.GetTileSheet(Graphics);
+                var bgMesh = Mesh.CreateTabBackground(Rect, border);
+                var labelMesh = Mesh.CreateStringMesh(Text, Root.GetTileSheet(Font), new Vector2(TextSize, TextSize), out drop)
+                    .Translate(Rect.X + border.TileWidth, Rect.Y + border.TileHeight)
+                    .Colorize(TextColor);
+                return Mesh.Merge(bgMesh, labelMesh);                
+            }
+
+            public override Point GetBestSize()
+            {
+                var font = Root.GetTileSheet(Font);
+                var border = Root.GetTileSheet(Graphics);
+                var labelSize = font.MeasureString(Text).Scale(TextSize);
+                return new Point(labelSize.X + (2 * border.TileWidth), labelSize.Y + border.TileHeight);
+            }
+        }
+
+        private List<Widget> TabPanels = new List<Widget>();
+        private List<Widget> TabButtons = new List<Widget>();
         public int TabPadding = 4;
 
         private int _selectedTab = 1;
@@ -22,12 +45,13 @@ namespace Gum.Widgets
             {
                 _selectedTab = value;
 
-                foreach (var child in Children)
+                foreach (var child in TabPanels)
                     child.Hidden = true;
-                Children[_selectedTab].Hidden = false;
+                TabPanels[_selectedTab].Hidden = false;
 
                 if (Root != null)
                     Root.SafeCall(OnSelectedTabChanged, this);
+
                 Invalidate();
             }
         }
@@ -35,44 +59,8 @@ namespace Gum.Widgets
         public Action<Widget> OnSelectedTabChanged = null;
         public Vector4 SelectedTabColor = new Vector4(1, 0, 0, 1);
 
-        public String SelectedName
-        {
-            get
-            {
-                if (SelectedTab >= 0 && SelectedTab < TabNames.Count)
-                    return TabNames[SelectedTab];
-                else return null;
-            }
-        }
-
         public override void Construct()
         {
-            if (InteriorMargin.Top == 0)
-                InteriorMargin.Top = Root.GetTileSheet(Font).TileHeight * IntegerTextSize;
-
-            OnClick += (sender, args) =>
-                {
-                    var interior = GetDrawableInterior();
-                    var realPoint = new Point(args.X - interior.X, args.Y - interior.Y);
-                    if (realPoint.Y > InteriorMargin.Top) return;
-                    var font = Root.GetTileSheet(Font);
-
-                    var tabIndex = 0;
-                    foreach (var tab in TabNames)
-                    {
-                        var tabLength = font.MeasureString(tab).X * PixelPerfectTextSize;
-                        if (realPoint.X < tabLength)
-                        {
-                            SelectedTab = tabIndex;
-                            break;
-                        }
-
-                        tabIndex += 1;
-                        realPoint.X -= (int)tabLength + TabPadding;
-                    }
-
-                    Invalidate();
-                };
         }
 
         /// <summary>
@@ -81,8 +69,22 @@ namespace Gum.Widgets
         public override void Layout()
         {
             Root.SafeCall(this.OnLayout, this);
-            var interior = GetDrawableInterior().Interior(InteriorMargin);
-            foreach (var child in Children)
+
+            if (TabButtons.Count == 0) return;
+
+            var tabPosition = new Point(Rect.X, Rect.Y);
+            foreach (var tabButton in TabButtons)
+            {
+                var bestSize = tabButton.GetBestSize();
+                tabButton.Rect = new Rectangle(tabPosition.X, tabPosition.Y, bestSize.X, bestSize.Y);
+                tabPosition.X += bestSize.X + TabPadding;
+                tabButton.Invalidate();
+            }
+
+            var tabSize = TabButtons[0].GetBestSize();
+            // Todo: Honor all margins.
+            var interior = GetDrawableInterior().Interior(0, tabSize.Y, 0, 0);
+            foreach (var child in TabPanels)
             {
                 child.Rect = interior;
                 child.Layout();
@@ -91,40 +93,33 @@ namespace Gum.Widgets
 
         public Widget AddTab(String Name, Widget Tab)
         {
-            AddChild(Tab);
-            TabNames.Add(Name);
+            var tabPosition = new Point(Rect.X, Rect.Y);
+            if (TabButtons.Count > 0)
+                tabPosition.X = TabButtons[TabButtons.Count - 1].Rect.Right + TabPadding;
 
-            if (TabNames.Count == 1)
+            var tabIndex = TabButtons.Count;
+            var tabButton = AddChild(new TabButton
+            {
+                Text = Name,
+                Graphics = "border-one",
+                OnClick = (sender, args) => SelectedTab = tabIndex,
+                TextSize = TextSize,
+                TextColor = TextColor
+            });
+
+            var tabSize = tabButton.GetBestSize();
+            tabButton.Rect = new Rectangle(tabPosition.X, tabPosition.Y, tabSize.X, tabSize.Y);
+            TabButtons.Add(tabButton);
+
+            AddChild(Tab);
+            TabPanels.Add(Tab);
+
+            if (TabButtons.Count == 1)
                 Tab.Hidden = false;
             else
                 Tab.Hidden = true;
-
+            
             return Tab;
-        }
-        
-        protected override Mesh Redraw()
-        {
-            var meshes = new List<Mesh>();
-            meshes.Add(base.Redraw());
-
-            var interior = GetDrawableInterior();
-            var tx = interior.X;
-            for (int i = 0; i < TabNames.Count; ++i)
-            {
-                var stringMeshSize = new Rectangle();
-                var font = Root.GetTileSheet(Font);
-                var stringMesh = Mesh.CreateStringMesh(
-                    TabNames[i],
-                    font,
-                    new Vector2(PixelPerfectTextSize, PixelPerfectTextSize),
-                    out stringMeshSize)
-                    .Colorize(i == SelectedTab ? SelectedTabColor : TextColor)
-                    .Translate(tx, interior.Y);
-                meshes.Add(stringMesh);
-                tx += stringMeshSize.Width + TabPadding;
-            }
-
-            return Mesh.Merge(meshes.ToArray());
-        }
+        }        
     }
 }

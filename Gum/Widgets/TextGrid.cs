@@ -23,19 +23,19 @@ namespace Gum.Widgets
             var interior = GetDrawableInterior();
             var font = Root.GetTileSheet(Font);
 
-            var gridW = (int)(interior.Width / (font.TileWidth * PixelPerfectTextSize));
-            var gridH = (int)(interior.Height / (font.TileHeight * PixelPerfectTextSize));
+            var gridW = (int)(interior.Width / (font.TileWidth * TextSize));
+            var gridH = (int)(interior.Height / (font.TileHeight * TextSize));
 
-            var realX = interior.X + (interior.Width / 2) - ((font.TileWidth * PixelPerfectTextSize * gridW) / 2);
-            var realY = interior.Y + (interior.Height / 2) - ((font.TileHeight * PixelPerfectTextSize * gridH) / 2);
+            var realX = interior.X + (interior.Width / 2) - ((font.TileWidth * TextSize * gridW) / 2);
+            var realY = interior.Y + (interior.Height / 2) - ((font.TileHeight * TextSize * gridH) / 2);
 
             var quads = new List<Mesh>();
             for (var y = 0; y < gridH; ++y)
                 for (var x = 0; x < gridW; ++x)
                     quads.Add(Mesh.Quad()
-                        .Scale(font.TileWidth * PixelPerfectTextSize, font.TileHeight * PixelPerfectTextSize)
-                        .Translate((x * font.TileWidth * PixelPerfectTextSize) + realX,
-                            (y * font.TileHeight * PixelPerfectTextSize) + realY)
+                        .Scale(font.TileWidth * TextSize, font.TileHeight * TextSize)
+                        .Translate((x * font.TileWidth * TextSize) + realX,
+                            (y * font.TileHeight * TextSize) + realY)
                         .Texture(font.TileMatrix(0)));
 
             GridMesh = Mesh.Merge(quads.ToArray());

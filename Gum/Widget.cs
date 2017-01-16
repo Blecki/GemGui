@@ -89,14 +89,7 @@ namespace Gum
             set { _textColor = value; }
         }
 
-        /// <summary>
-        /// Size of text, in multiples of the font size. Font is always drawn pixel-perfect - it will always be
-        /// a perfect multiple of the underlying bitmap on the screen. However, it is matching to SCREEN PIXELS,
-        /// so a fractional size relative the gui's virtual screen is possible.
-        /// </summary>
-        public float TextSize = 1.0f; 
-        public int IntegerTextSize { get { return (int)Math.Ceiling(PixelPerfectTextSize); } }
-        public float PixelPerfectTextSize {  get { return (float)Math.Floor(TextSize * (float)Root.ScaleRatio) / (float)Root.ScaleRatio; } }
+        public int TextSize = 1; 
 
         public String Tooltip = null;
 
@@ -244,7 +237,7 @@ namespace Gum
             if (!String.IsNullOrEmpty(Text))
             {
                 var font = Root.GetTileSheet(Font);
-                size = font.MeasureString(Text).Scale(IntegerTextSize);
+                size = font.MeasureString(Text).Scale(TextSize);
             }
 
             if (!String.IsNullOrEmpty(Border))
@@ -293,7 +286,7 @@ namespace Gum
                 var stringMesh = Mesh.CreateStringMesh(
                     Text,
                     font,
-                    new Vector2(PixelPerfectTextSize, PixelPerfectTextSize),
+                    new Vector2(TextSize, TextSize),
                     out stringMeshSize)
                     .Colorize(TextColor);
 

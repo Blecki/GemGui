@@ -40,7 +40,7 @@ namespace Gum.Widgets
         }
 
         private VerticalScrollBar ScrollBar;
-        public int ItemHeight { get { return (Root.GetTileSheet(Font).TileHeight * IntegerTextSize) + 2; } }
+        public int ItemHeight { get { return (Root.GetTileSheet(Font).TileHeight * TextSize) + 2; } }
 
         public override void Construct()
         {
@@ -67,7 +67,7 @@ namespace Gum.Widgets
         protected override Mesh Redraw()
         {
             var font = Root.GetTileSheet(Font);
-            var itemHeight = (font.TileHeight * IntegerTextSize) + 2;
+            var itemHeight = (font.TileHeight * TextSize) + 2;
             var drawableInterior = GetDrawableInterior();
             var itemsThatFit = drawableInterior.Height / itemHeight;
 
@@ -84,10 +84,10 @@ namespace Gum.Widgets
             Rectangle toss;
             for (int i = 0; i < itemsThatFit && (topItem + i) < Items.Count; ++i)
             {
-                meshes.Add(Mesh.CreateStringMesh(Items[topItem + i], font, new Vector2(PixelPerfectTextSize, PixelPerfectTextSize), out toss)
+                meshes.Add(Mesh.CreateStringMesh(Items[topItem + i], font, new Vector2(TextSize, TextSize), out toss)
                     .Translate(drawableInterior.X, stringPos)
                     .Colorize(topItem + i == SelectedIndex ? SelectedTextColor : TextColor));
-                stringPos += (font.TileHeight * IntegerTextSize) + 2;
+                stringPos += (font.TileHeight * TextSize) + 2;
             }
 
             return Mesh.Merge(meshes.ToArray());

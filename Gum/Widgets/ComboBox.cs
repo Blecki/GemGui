@@ -100,7 +100,7 @@ namespace Gum.Widgets
 
         public override Point GetBestSize()
         {
-            var baseSize = new Point(0, Root.GetTileSheet(Font).TileHeight * IntegerTextSize);
+            var baseSize = new Point(0, Root.GetTileSheet(Font).TileHeight * TextSize);
             
             var gfx = Root.GetTileSheet(Graphics);
             if (baseSize.X < gfx.TileWidth) baseSize.X = gfx.TileWidth;

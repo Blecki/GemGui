@@ -52,7 +52,7 @@ namespace Gum.Widgets
             if (!String.IsNullOrEmpty(Text))
             {
                 var font = Root.GetTileSheet(Font);
-                size = font.MeasureString(Text).Scale(IntegerTextSize);
+                size = font.MeasureString(Text).Scale(TextSize);
             }
 
             var gfx = Root.GetTileSheet(Graphics);
