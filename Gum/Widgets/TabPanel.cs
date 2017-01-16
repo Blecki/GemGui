@@ -18,6 +18,11 @@ namespace Gum.Widgets
                 Rectangle drop;
                 var border = Root.GetTileSheet(Graphics);
                 var bgMesh = Mesh.CreateTabBackground(Rect, border);
+
+                var parent = Parent as TabPanel;
+                if (!Object.ReferenceEquals(parent.GetTabButton(parent.SelectedTab), this))
+                    bgMesh.Colorize(new Vector4(0.75f, 0.75f, 0.75f, 1.0f));
+
                 var labelMesh = Mesh.CreateStringMesh(Text, Root.GetTileSheet(Font), new Vector2(TextSize, TextSize), out drop)
                     .Translate(Rect.X + border.TileWidth, Rect.Y + border.TileHeight)
                     .Colorize(TextColor);
@@ -75,6 +80,8 @@ namespace Gum.Widgets
                 foreach (var child in TabPanels)
                     child.Hidden = true;
                 TabPanels[_selectedTab].Hidden = false;
+
+                foreach (var tab in TabButtons) tab.Invalidate();
 
                 if (Root != null)
                     Root.SafeCall(OnSelectedTabChanged, this);
@@ -134,6 +141,8 @@ namespace Gum.Widgets
                 TextSize = TextSize,
                 TextColor = TextColor
             });
+
+            SendToBack(tabButton);
 
             var tabSize = tabButton.GetBestSize();
             tabButton.Rect = new Rectangle(tabPosition.X, tabPosition.Y, tabSize.X, tabSize.Y);

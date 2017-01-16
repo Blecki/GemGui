@@ -32,19 +32,19 @@ namespace Gum
             //Left edge
             result.Add(Quad()
                 .Texture(Tiles.TileMatrix(3))
-                .Scale(Tiles.TileWidth, Rect.Height - Tiles.TileHeight)
+                .Scale(Tiles.TileWidth, Rect.Height)
                 .Translate(Rect.X, Rect.Y + Tiles.TileHeight));
 
             //Right edge
             result.Add(Quad()
                 .Texture(Tiles.TileMatrix(5))
-                .Scale(Tiles.TileWidth, Rect.Height - Tiles.TileHeight)
+                .Scale(Tiles.TileWidth, Rect.Height)
                 .Translate(Rect.Right - Tiles.TileWidth, Rect.Y + Tiles.TileHeight));
 
             //Center
             result.Add(Quad()
                 .Texture(Tiles.TileMatrix(4))
-                .Scale(Rect.Width - (2 * Tiles.TileWidth), Rect.Height - Tiles.TileHeight)
+                .Scale(Rect.Width - (2 * Tiles.TileWidth), Rect.Height)
                 .Translate(Rect.X + Tiles.TileWidth, Rect.Y + Tiles.TileHeight));
 
             return Merge(result.ToArray());

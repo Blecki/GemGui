@@ -176,6 +176,14 @@ namespace Gum
             return child;
         }
 
+        public void SendToBack(Widget Child)
+        {
+            if (!Object.ReferenceEquals(Child.Parent, this)) throw new InvalidOperationException();
+            Children.Remove(Child);
+            Children.Insert(0, Child);
+            Invalidate();
+        }
+
         public void RemoveChild(Widget child)
         {
             Children.Remove(child);
