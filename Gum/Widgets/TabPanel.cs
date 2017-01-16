@@ -33,11 +33,38 @@ namespace Gum.Widgets
             }
         }
 
+        private class InteriorPanel : Widget
+        {
+            protected override Mesh Redraw()
+            {
+                var border = Root.GetTileSheet(Graphics);
+                var tabPanel = Parent as TabPanel;
+                var tabButton = tabPanel.GetTabButton(tabPanel.SelectedTab);
+                return Mesh.CreateTabPanelBackground(Rect, border, tabButton.Rect.X, tabButton.Rect.Width);
+            }
+
+            public override void Layout()
+            {
+                var border = Root.GetTileSheet(Graphics);
+                foreach (var child in Children)
+                {
+                    child.Rect = Rect.Interior(border.TileWidth, border.TileHeight, border.TileWidth,
+                        border.TileHeight);
+                    child.Layout();
+                }
+            }
+        }
+
         private List<Widget> TabPanels = new List<Widget>();
         private List<Widget> TabButtons = new List<Widget>();
         public int TabPadding = 4;
 
-        private int _selectedTab = 1;
+        internal Widget GetTabButton(int Index)
+        {
+            return TabButtons[Index];
+        }
+
+        private int _selectedTab = 0;
         public int SelectedTab
         {
             get { return _selectedTab; }
@@ -61,6 +88,7 @@ namespace Gum.Widgets
 
         public override void Construct()
         {
+            if (String.IsNullOrEmpty(Graphics)) Graphics = "border-one";
         }
 
         /// <summary>
@@ -101,7 +129,7 @@ namespace Gum.Widgets
             var tabButton = AddChild(new TabButton
             {
                 Text = Name,
-                Graphics = "border-one",
+                Graphics = Graphics,
                 OnClick = (sender, args) => SelectedTab = tabIndex,
                 TextSize = TextSize,
                 TextColor = TextColor
@@ -111,13 +139,18 @@ namespace Gum.Widgets
             tabButton.Rect = new Rectangle(tabPosition.X, tabPosition.Y, tabSize.X, tabSize.Y);
             TabButtons.Add(tabButton);
 
-            AddChild(Tab);
-            TabPanels.Add(Tab);
+            var tabPanel = AddChild(new InteriorPanel
+                {
+                    Graphics = Graphics
+                });
+            tabPanel.AddChild(Tab);
+            AddChild(tabPanel);
+            TabPanels.Add(tabPanel);
 
             if (TabButtons.Count == 1)
-                Tab.Hidden = false;
+                tabPanel.Hidden = false;
             else
-                Tab.Hidden = true;
+                tabPanel.Hidden = true;
             
             return Tab;
         }        

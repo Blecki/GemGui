@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Geo\Basics.cs" />
     <Compile Include="Geo\CreateQuad.cs" />
+    <Compile Include="Geo\CreateTabPanelBackground.cs" />
     <Compile Include="Geo\CreateScale9Background.cs" />
     <Compile Include="Geo\CreateStringMesh.cs" />
     <Compile Include="Geo\Mesh.cs" />
