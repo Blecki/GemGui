@@ -204,7 +204,7 @@ namespace Gum
         /// Shortcut to call an action without having to check for null.
         /// </summary>
         /// <param name="Action"></param>
-        internal void SafeCall<T>(Action<Widget, T> Action, Widget Widget, T Args)
+        public void SafeCall<T>(Action<Widget, T> Action, Widget Widget, T Args)
         {
             if (Action != null) Action(Widget, Args);
         }
@@ -214,7 +214,7 @@ namespace Gum
         /// Shortcut to call an action without having to check for null.
         /// </summary>
         /// <param name="Action"></param>
-        internal void SafeCall(Action<Widget> Action, Widget Widget)
+        public void SafeCall(Action<Widget> Action, Widget Widget)
         {
             if (Action != null) Action(Widget);
         }
