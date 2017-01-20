@@ -196,6 +196,11 @@ namespace Gum
             return Children[ID];
         }
 
+        public IEnumerable<Widget> EnumerateChildren()
+        {
+            foreach (var child in Children) yield return child;
+        }
+
         public void Clear()
         {
             foreach (var child in Children)
