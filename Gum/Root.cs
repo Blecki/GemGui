@@ -127,6 +127,7 @@ namespace Gum
             foreach (var child in Widget.Children)
                 CleanupWidget(child);
             Widget.Root = null;
+            Widget.Constructed = false;
             if (Object.ReferenceEquals(FocusItem, Widget)) FocusItem = null;
             if (Object.ReferenceEquals(HoverItem, Widget)) HoverItem = null;
             if (Object.ReferenceEquals(PopupItem, Widget)) PopupItem = null;

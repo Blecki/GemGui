@@ -124,7 +124,7 @@ namespace Gum
         internal List<Widget> Children = new List<Widget>();
         public Widget Parent { get; private set; }
         public Root Root { get; internal set; }
-        private bool Constructed = false;
+        internal bool Constructed = false;
 
         public Widget() { }
 
