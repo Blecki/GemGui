@@ -44,6 +44,10 @@ namespace Gum
         
             ResizeVirtualScreen(IdealSize);
             ResetGui();
+
+            // Grab initial mouse position.
+            var mouse = Mouse.GetState();
+            MousePosition = ScreenPointToGuiPoint(new Point(mouse.X, mouse.Y));
         }
                
         /// <summary>
