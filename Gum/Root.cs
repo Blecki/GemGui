@@ -350,6 +350,8 @@ namespace Gum
                 * Matrix.CreateTranslation(-0.5f, -0.5f, 0.0f));
 #elif GEMMONO
                 );
+#elif GEMFNA
+                );
 #endif
 
             RenderData.Effect.Parameters["Texture"].SetValue(RenderData.Texture);

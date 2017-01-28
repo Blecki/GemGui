@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{803EFE3A-4DB5-4F86-B212-273350ED9C07}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FnaGum</RootNamespace>
+    <AssemblyName>FnaGum</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GEMFNA</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Enums.cs" />
+    <Compile Include="Geo\Basics.cs" />
+    <Compile Include="Geo\CreateQuad.cs" />
+    <Compile Include="Geo\CreateScale9Background.cs" />
+    <Compile Include="Geo\CreateStringMesh.cs" />
+    <Compile Include="Geo\CreateTabPanelBackground.cs" />
+    <Compile Include="Geo\ITileSheet.cs" />
+    <Compile Include="Geo\Mesh.cs" />
+    <Compile Include="Geo\TileSheet.cs" />
+    <Compile Include="Geo\VariableWidthFont.cs" />
+    <Compile Include="HelperExtensions.cs" />
+    <Compile Include="InputEventArgs.cs" />
+    <Compile Include="JsonTileSheet.cs" />
+    <Compile Include="Layout.cs" />
+    <Compile Include="Margin.cs" />
+    <Compile Include="MousePointer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RectangleExtension.cs" />
+    <Compile Include="RenderData.cs" />
+    <Compile Include="Root.cs" />
+    <Compile Include="TextFieldLogic.cs" />
+    <Compile Include="TextureAtlasCompiler.cs" />
+    <Compile Include="TileReference.cs" />
+    <Compile Include="Widget.cs" />
+    <Compile Include="Widgets\CheckBox.cs" />
+    <Compile Include="Widgets\ComboBox.cs" />
+    <Compile Include="Widgets\EditableTextField.cs" />
+    <Compile Include="Widgets\HorizontalFloatSlider.cs" />
+    <Compile Include="Widgets\HorizontalSlider.cs" />
+    <Compile Include="Widgets\ListView.cs" />
+    <Compile Include="Widgets\TabPanel.cs" />
+    <Compile Include="Widgets\TextGrid.cs" />
+    <Compile Include="Widgets\VerticalScrollBar.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FNA\FNA.csproj">
+      <Project>{35253ce1-c864-4cd3-8249-4d1319748e8f}</Project>
+      <Name>FNA</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
