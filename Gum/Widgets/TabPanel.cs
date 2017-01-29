@@ -17,7 +17,8 @@ namespace Gum.Widgets
             {
                 Rectangle drop;
                 var border = Root.GetTileSheet(Graphics);
-                var bgMesh = Mesh.CreateTabBackground(Rect, border);
+                var bgMesh = Mesh.CreateScale9Background(Rect.Interior(0, 0, 0, -border.TileHeight), border,
+                    Scale9Corners.Top | Scale9Corners.Left | Scale9Corners.Right);
 
                 var parent = Parent as TabPanel;
                 if (!Object.ReferenceEquals(parent.GetTabButton(parent.SelectedTab), this))
