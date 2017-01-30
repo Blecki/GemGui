@@ -156,7 +156,7 @@ namespace Gum
         public void Invalidate()
         {
             CachedRenderMesh = null;
-            if (!Hidden && Parent != null) Parent.Invalidate();
+            if (Parent != null) Parent.Invalidate();
         }
 
         public Widget AddChild(Widget child)
