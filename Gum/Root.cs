@@ -327,7 +327,8 @@ namespace Gum
 
             if (FocusItem != null) SafeCall(FocusItem.OnUpdateWhileFocus, FocusItem);
 
-            foreach (var item in UpdateItems)
+            var localCopy = new List<Widget>(UpdateItems);
+            foreach (var item in localCopy)
                 SafeCall(item.OnUpdate, item, Time);
         }
 
