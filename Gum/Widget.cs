@@ -115,6 +115,7 @@ namespace Gum
         public Action<Widget, InputEventArgs> OnKeyUp = null;
         public Action<Widget> OnPopupClose = null;
         public Action<Widget> OnUpdateWhileFocus = null;
+        public Action<Widget> OnUpdate = null;
         public Action<Widget> OnLayout = null;
         public Action<Widget> OnClose = null;
 

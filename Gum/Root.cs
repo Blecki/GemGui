@@ -28,6 +28,7 @@ namespace Gum
         public Widget PopupItem { get; private set; }
         public bool DestroyPopupOnOffClick { get; private set; }
         public Widget TooltipItem { get; private set; }
+        private List<Widget> UpdateItems = new List<Widget>();
 
         public MousePointer MousePointer = null;
         private Point MousePosition = new Point(0, 0);
@@ -136,6 +137,7 @@ namespace Gum
             if (Object.ReferenceEquals(HoverItem, Widget)) HoverItem = null;
             if (Object.ReferenceEquals(PopupItem, Widget)) PopupItem = null;
             if (Object.ReferenceEquals(TooltipItem, Widget)) TooltipItem = null;
+            UpdateItems.RemoveAll(p => Object.ReferenceEquals(p, Widget));
         }
 
         public void DestroyWidget(Widget Widget)
@@ -144,6 +146,13 @@ namespace Gum
             if (Widget.Parent != null) Widget.Parent.RemoveChild(Widget);
             SafeCall(Widget.OnClose, Widget);
         }            
+
+        public void RegisterForUpdate(Widget Widget)
+        {
+            if (!Object.ReferenceEquals(this, Widget.Root)) throw new InvalidOperationException();
+            if (!UpdateItems.Contains(Widget))
+                UpdateItems.Add(Widget);
+        }
 
         /// <summary>
         /// Shortcut function for showing a uiitem as a 'dialog'.
@@ -317,6 +326,9 @@ namespace Gum
             RunTime = Time.TotalGameTime.TotalSeconds;
 
             if (FocusItem != null) SafeCall(FocusItem.OnUpdateWhileFocus, FocusItem);
+
+            foreach (var item in UpdateItems)
+                SafeCall(item.OnUpdate, item);
         }
 
         public void Draw()
