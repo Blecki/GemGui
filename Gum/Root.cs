@@ -328,7 +328,7 @@ namespace Gum
             if (FocusItem != null) SafeCall(FocusItem.OnUpdateWhileFocus, FocusItem);
 
             foreach (var item in UpdateItems)
-                SafeCall(item.OnUpdate, item);
+                SafeCall(item.OnUpdate, item, Time);
         }
 
         public void Draw()
