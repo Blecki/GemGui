@@ -338,6 +338,46 @@ namespace Gum
         }
 
         /// <summary>
+        /// Draw a quad using the device provided earlier. Depth testing should be off.
+        /// </summary>
+        public void DrawQuad(Rectangle Quad, Texture2D Texture)
+        {
+            RenderData.Device.DepthStencilState = DepthStencilState.None;
+
+            RenderData.Effect.CurrentTechnique = RenderData.Effect.Techniques[0];
+
+            RenderData.Effect.Parameters["View"].SetValue(Matrix.Identity);
+
+            RenderData.Effect.Parameters["Projection"].SetValue(
+                Matrix.CreateOrthographicOffCenter(0, RenderData.Device.Viewport.Width,
+                RenderData.Device.Viewport.Height, 0, -32, 32));
+
+            var scale = RealScreen.Width / VirtualScreen.Width;
+
+            // Need to offset by the subpixel portion to avoid screen artifacts.
+            // Remove this offset is porting to Monogame, monogame does it correctly.
+            RenderData.Effect.Parameters["World"].SetValue(
+                Matrix.CreateTranslation(RealScreen.X, RealScreen.Y, 1.0f)
+                * Matrix.CreateScale(scale)
+#if GEMXNA
+                * Matrix.CreateTranslation(-0.5f, -0.5f, 0.0f));
+#elif GEMMONO
+                );
+#elif GEMFNA
+);
+#endif
+
+            RenderData.Effect.Parameters["Texture"].SetValue(Texture);
+
+            RenderData.Effect.CurrentTechnique.Passes[0].Apply();
+
+            var mesh = Mesh.Quad()
+                    .Scale(Quad.Width, Quad.Height)
+                    .Translate(Quad.X, Quad.Y);
+            mesh.Render(RenderData.Device);
+        }
+
+        /// <summary>
         /// Draw the GUI using the device provided earlier. Depth testing should be off.
         /// </summary>
         public void Draw(Point Offset)
