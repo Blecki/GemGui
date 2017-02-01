@@ -14,6 +14,8 @@ namespace Gum
         MouseMove,
         MouseEnter,
         MouseLeave,
+        MouseDown,
+        MouseUp,
         MouseHover,
         MouseClick
     }

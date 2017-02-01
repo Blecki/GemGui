@@ -47,7 +47,8 @@ namespace GemGuiTest
                 {
                     Text = "- DEMO MENU -",
                     Border = "border-one",
-                    TextSize = 2,
+                    TextSize = 1,
+                    TextColor = new Vector4(1,0,0,1),
                     TextHorizontalAlign = HorizontalAlign.Center,
                     MinimumSize = new Point(256, 256),
                     AutoLayout = AutoLayout.FloatCenter,

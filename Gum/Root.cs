@@ -29,6 +29,7 @@ namespace Gum
         public bool DestroyPopupOnOffClick { get; private set; }
         public Widget TooltipItem { get; private set; }
         private List<Widget> UpdateItems = new List<Widget>();
+        public Widget MouseDownItem { get; private set; }
 
         public MousePointer MousePointer = null;
         public Point MousePosition = new Point(0, 0);
@@ -243,6 +244,14 @@ namespace Gum
             return new Point((int)mouseX, (int)mouseY);
         }
 
+        private bool IsHoverPartOfPopup()
+        {
+            if (PopupItem == null || HoverItem == null) return false;
+            if (Object.ReferenceEquals(PopupItem, HoverItem)) return true;
+            if (HoverItem.IsChildOf(PopupItem)) return true;
+            return false;
+        }
+
         /// <summary>
         /// Process mouse events.
         /// </summary>
@@ -267,7 +276,29 @@ namespace Gum
                             if (newHoverItem != null) SafeCall(newHoverItem.OnMouseEnter, newHoverItem, newArgs);
                             HoverItem = newHoverItem;
                         }
+
+                        if (MouseDownItem != null)
+                            SafeCall(MouseDownItem.OnMouseMove, MouseDownItem,
+                                new InputEventArgs { X = MousePosition.X, Y = MousePosition.Y });
                     }
+                    break;
+                case InputEvents.MouseDown:
+                    {
+                        MousePosition = ScreenPointToGuiPoint(new Point(Args.X, Args.Y));
+                        var newArgs = new InputEventArgs { X = MousePosition.X, Y = MousePosition.Y };
+
+                        MouseDownItem = null;
+                        if (PopupItem != null)
+                        {
+                            if (IsHoverPartOfPopup())
+                                MouseDownItem = HoverItem;
+                        }
+                        else
+                            MouseDownItem = HoverItem;
+                    }
+                    break;
+                case InputEvents.MouseUp:
+                    MouseDownItem = null;
                     break;
                 case InputEvents.MouseClick:
                     {
