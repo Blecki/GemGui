@@ -31,7 +31,7 @@ namespace Gum
         private List<Widget> UpdateItems = new List<Widget>();
 
         public MousePointer MousePointer = null;
-        private Point MousePosition = new Point(0, 0);
+        public Point MousePosition = new Point(0, 0);
         private DateTime MouseMotionTime = DateTime.Now;
         public float SecondsBeforeTooltip = 1.0f;
         public String TooltipFont = null;
@@ -276,7 +276,7 @@ namespace Gum
 
                         if (PopupItem != null)
                         {
-                            if (HoverItem == null || (!Object.ReferenceEquals(HoverItem, PopupItem) && 
+                            if (HoverItem == null || (!Object.ReferenceEquals(HoverItem, PopupItem) &&
                                 !HoverItem.IsChildOf(PopupItem)))
                             {
                                 if (DestroyPopupOnOffClick)
@@ -288,6 +288,16 @@ namespace Gum
 
                                 return;
                             }
+
+                            if (HoverItem != null && (Object.ReferenceEquals(HoverItem, PopupItem) ||
+                                HoverItem.IsChildOf(PopupItem)))
+                            {
+                                Args.Handled = true;
+                                SafeCall(HoverItem.OnClick, HoverItem, newArgs);
+                                return;
+                            }
+
+                            return;
                         }
 
                         if (HoverItem != null)
