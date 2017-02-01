@@ -56,9 +56,9 @@ namespace Gum
                 {
                     for (int i = 0; i < textureData.Length; ++i)
                     {
-                        if (textureData[i].R != 255 ||
-                            textureData[i].G != 255 ||
-                            textureData[i].B != 255)
+                        if (textureData[i].R == 0 ||
+                            textureData[i].G == 0 ||
+                            textureData[i].B == 0)
                             textureData[i] = new Color(0, 0, 0, 0);
                     }
 
