@@ -123,6 +123,8 @@ namespace Gum
 
         #endregion
 
+        public Object Tag = null;
+
         private Mesh CachedRenderMesh = null;
         internal List<Widget> Children = new List<Widget>();
         public Widget Parent { get; private set; }

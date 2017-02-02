@@ -20,12 +20,21 @@ namespace Gum
 
             foreach (var c in String)
             {
-                var glyphSize = FontSheet.GlyphSize(c - ' ');
-                glyphMeshes.Add(Mesh.Quad()
-                    .Texture(FontSheet.TileMatrix(c - ' '))
-                    .Scale(glyphSize.X * GlyphScale.X, glyphSize.Y * GlyphScale.Y)
-                    .Translate(pos.X, pos.Y));
-                pos.X += glyphSize.X * GlyphScale.X;
+                if (c == '\n')
+                {
+                    pos.X = 0;
+                    pos.Y += FontSheet.TileHeight * GlyphScale.Y;
+                }
+                else if (c < 32) continue;
+                else
+                {
+                    var glyphSize = FontSheet.GlyphSize(c - ' ');
+                    glyphMeshes.Add(Mesh.Quad()
+                        .Texture(FontSheet.TileMatrix(c - ' '))
+                        .Scale(glyphSize.X * GlyphScale.X, glyphSize.Y * GlyphScale.Y)
+                        .Translate(pos.X, pos.Y));
+                    pos.X += glyphSize.X * GlyphScale.X;
+                }
             }
 
             Bounds = new Rectangle(0, 0, (int)pos.X, (int)(FontSheet.TileHeight * GlyphScale.Y));
