@@ -92,6 +92,7 @@
     <Compile Include="Widgets\EditableTextField.cs" />
     <Compile Include="Widgets\HorizontalFloatSlider.cs" />
     <Compile Include="Widgets\HorizontalSlider.cs" />
+    <Compile Include="Widgets\WidgetListView.cs" />
     <Compile Include="Widgets\TabPanel.cs" />
     <Compile Include="Widgets\ListView.cs" />
     <Compile Include="Widgets\TextGrid.cs" />

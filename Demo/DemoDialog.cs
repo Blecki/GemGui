@@ -58,14 +58,19 @@ namespace GemGuiTest
                 AutoLayout = AutoLayout.DockTop
             });
 
-            var listView = AddChild(new Gum.Widgets.ListView
+            var listView = AddChild(new Gum.Widgets.WidgetListView
             {
                 Rect = new Rectangle(0, 0, 256, 256),
-                TextSize = 2,
-                AutoLayout = AutoLayout.DockLeft
-            }) as Gum.Widgets.ListView;
+                AutoLayout = AutoLayout.DockLeft,
+                ItemHeight = 24
+            }) as Gum.Widgets.WidgetListView;
             for (int i = 0; i < 40; ++i)
-                listView.Items.Add(String.Format("Item number {0}", i));
+                listView.AddItem(new Gum.Widget
+                    {
+                        Text = String.Format("Item number {0}", i),
+                        Background = new TileReference("basic", 0),
+                        TextSize = 2
+                    });
             listView.SelectedIndex = 10;
 
 
