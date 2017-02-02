@@ -57,14 +57,16 @@ namespace Gum.Widgets
 
             OnClick += (sender, args) =>
                 {
-                    SelectedIndex = ScrollBar.ScrollPosition + ((args.Y - GetDrawableInterior().Y) / ItemHeight);
+                    if (args.X < ScrollBar.Rect.Left)
+                        SelectedIndex = ScrollBar.ScrollPosition + ((args.Y - GetDrawableInterior().Y) / ItemHeight);
                 };
+
+            TriggerOnChildClick = true;
         }
 
         public void AddItem(Widget Item)
         {
             Item.AutoLayout = Gum.AutoLayout.None;
-            Item.OnClick += (sender, args) => this.OnClick(sender, args);
             AddChild(Item);
         }
 

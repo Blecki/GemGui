@@ -119,6 +119,7 @@ namespace Gum
         public Action<Widget, GameTime> OnUpdate = null;
         public Action<Widget> OnLayout = null;
         public Action<Widget> OnClose = null;
+        public bool TriggerOnChildClick = false;
 
         #endregion
 

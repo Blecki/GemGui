@@ -326,7 +326,7 @@ namespace Gum
                             {
                                 Args.Handled = true;
                                 if (Object.ReferenceEquals(HoverItem, MouseDownItem))
-                                    SafeCall(HoverItem.OnClick, HoverItem, newArgs);
+                                    CallOnClick(HoverItem, newArgs);
                                 MouseDownItem = null;
                                 return;
                             }
@@ -338,7 +338,7 @@ namespace Gum
                         if (HoverItem != null && Object.ReferenceEquals(HoverItem, MouseDownItem))
                         {
                             Args.Handled = true;
-                            SafeCall(HoverItem.OnClick, HoverItem, newArgs);
+                            CallOnClick(HoverItem, newArgs);
                         }
                         MouseDownItem = null;
                     }
@@ -352,6 +352,18 @@ namespace Gum
                 case InputEvents.KeyUp:
                     if (FocusItem != null) SafeCall(FocusItem.OnKeyUp, FocusItem, Args);
                     break;
+            }
+        }
+
+        private void CallOnClick(Widget Widget, InputEventArgs Args)
+        {
+            SafeCall(Widget.OnClick, Widget, Args);
+            var parent = Widget.Parent;
+            while (parent != null)
+            {
+                if (parent.TriggerOnChildClick)
+                    SafeCall(parent.OnClick, parent, Args);
+                parent = parent.Parent;
             }
         }
 

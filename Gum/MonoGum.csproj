@@ -76,6 +76,7 @@
     <Compile Include="Widgets\ListView.cs" />
     <Compile Include="Widgets\HorizontalSlider.cs" />
     <Compile Include="Widgets\VerticalScrollBar.cs" />
+    <Compile Include="Widgets\WidgetListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
