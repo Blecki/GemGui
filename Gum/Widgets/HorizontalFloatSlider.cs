@@ -47,13 +47,16 @@ namespace Gum.Widgets
         {
             if (String.IsNullOrEmpty(Graphics)) Graphics = "horizontal-slider";
 
-            OnClick += (sender, args) =>
-                {
-                    var gfx = Root.GetTileSheet(Graphics);
-                    var scrollSize = Rect.Width - (2 * EndBufferSize);
-                    var clickX = args.X - Rect.X - EndBufferSize;
-                    ScrollPercentage = (float)clickX / (float)scrollSize;
-                };
+            OnClick += (sender, args) => SetFromMousePosition(args.X);
+            OnMouseMove += (sender, args) => SetFromMousePosition(args.X);
+        }
+
+        private void SetFromMousePosition(int X)
+        {
+            var gfx = Root.GetTileSheet(Graphics);
+            var scrollSize = Rect.Width - (2 * EndBufferSize);
+            var clickX = X - Rect.X - EndBufferSize;
+            ScrollPercentage = (float)clickX / (float)scrollSize;
         }
 
         protected override Mesh Redraw()

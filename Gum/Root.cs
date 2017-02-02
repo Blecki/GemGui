@@ -298,7 +298,7 @@ namespace Gum
                     }
                     break;
                 case InputEvents.MouseUp:
-                    MouseDownItem = null;
+                    //MouseDownItem = null;
                     break;
                 case InputEvents.MouseClick:
                     {
@@ -317,6 +317,7 @@ namespace Gum
                                     PopupItem = null;
                                 }
 
+                                MouseDownItem = null;
                                 return;
                             }
 
@@ -324,18 +325,22 @@ namespace Gum
                                 HoverItem.IsChildOf(PopupItem)))
                             {
                                 Args.Handled = true;
-                                SafeCall(HoverItem.OnClick, HoverItem, newArgs);
+                                if (Object.ReferenceEquals(HoverItem, MouseDownItem))
+                                    SafeCall(HoverItem.OnClick, HoverItem, newArgs);
+                                MouseDownItem = null;
                                 return;
                             }
 
+                            MouseDownItem = null;
                             return;
                         }
 
-                        if (HoverItem != null)
+                        if (HoverItem != null && Object.ReferenceEquals(HoverItem, MouseDownItem))
                         {
                             Args.Handled = true;
                             SafeCall(HoverItem.OnClick, HoverItem, newArgs);
                         }
+                        MouseDownItem = null;
                     }
                     break;
                 case InputEvents.KeyPress:

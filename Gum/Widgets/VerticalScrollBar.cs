@@ -46,18 +46,21 @@ namespace Gum.Widgets
         {
             if (String.IsNullOrEmpty(Graphics)) Graphics = "vertical-scrollbar";
 
-            OnClick += (sender, args) =>
-                {
-                    var gfx = Root.GetTileSheet(Graphics);
-                    var scrollSize = Rect.Height - gfx.TileHeight - gfx.TileHeight;
-                    var clickY = args.Y - Rect.Y - gfx.TileHeight;
-                    if (clickY >= 0 && clickY < scrollSize)
-                        ScrollPercentage = (float)clickY / (float)scrollSize;
-                    else if (clickY < 0)
-                        ScrollPosition -= 1;
-                    else if (clickY >= scrollSize)
-                        ScrollPosition += 1;
-                };
+            OnClick += (sender, args) => SetFromMousePosition(args.Y);
+            OnMouseMove += (sender, args) => SetFromMousePosition(args.Y);
+        }
+
+        private void SetFromMousePosition(int Y)
+        {
+            var gfx = Root.GetTileSheet(Graphics);
+            var scrollSize = Rect.Height - gfx.TileHeight - gfx.TileHeight;
+            var clickY = Y - Rect.Y - gfx.TileHeight;
+            if (clickY >= 0 && clickY < scrollSize)
+                ScrollPercentage = (float)clickY / (float)scrollSize;
+            else if (clickY < 0)
+                ScrollPosition -= 1;
+            else if (clickY >= scrollSize)
+                ScrollPosition += 1;
         }
 
         protected override Mesh Redraw()
