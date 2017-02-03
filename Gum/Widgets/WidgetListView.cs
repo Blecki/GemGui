@@ -99,7 +99,7 @@ namespace Gum.Widgets
                 Children[i].Invalidate();
             }
 
-            for (int i = 0; i < itemsThatFit && (topItem + i) < Children.Count; ++i)
+            for (int i = 0; i < itemsThatFit && (topItem + i) < (Children.Count - 1); ++i)
             {
                 Children[topItem + i + 1].Rect = new Rectangle(drawableInterior.Left, topPos, drawableInterior.Width,
                     ItemHeight);
