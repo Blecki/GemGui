@@ -102,7 +102,23 @@ namespace Gum
 
         public Point MeasureString(String S)
         {
-            return new Point(S.Sum(c => GlyphSize(c - ' ').X), GlyphSize(0).Y);
+            var size = new Point(0, TileHeight);
+            var lineWidth = 0;
+            foreach (var c in S)
+            {
+                if (c == '\n')
+                {
+                    size.Y += TileHeight;
+                    lineWidth = 0;
+                }
+                else if (c < 32) continue;
+                else
+                {
+                    lineWidth += GlyphSize(c - ' ').X;
+                    if (lineWidth > size.X) size.X = lineWidth;
+                }
+            }
+            return size;
         }
     }
 }

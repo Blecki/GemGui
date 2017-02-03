@@ -15,7 +15,7 @@ namespace GemGuiTest
     {
         GraphicsDeviceManager graphics;
         private Gum.Root GuiRoot;
-        private KeyboardInput Input;
+        private Gum.Input.GumInputMapper Input;
 
         public Main()
         {
@@ -23,7 +23,7 @@ namespace GemGuiTest
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 600;
 
-            Input = new KeyboardInput(Window.Handle);
+            Input = new Gum.Input.GumInputMapper(Window.Handle);
 
         }
 
