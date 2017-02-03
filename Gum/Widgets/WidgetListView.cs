@@ -57,7 +57,7 @@ namespace Gum.Widgets
 
             OnClick += (sender, args) =>
                 {
-                    if (args.X < ScrollBar.Rect.Left)
+                    if (ScrollBar.Hidden || args.X < ScrollBar.Rect.Left)
                         SelectedIndex = ScrollBar.ScrollPosition + ((args.Y - GetDrawableInterior().Y) / ItemHeight);
                 };
 
@@ -84,8 +84,16 @@ namespace Gum.Widgets
             var itemsThatFit = drawableInterior.Height / ItemHeight;
 
             // Update scrollbar scroll area.
-            if (itemsThatFit > Children.Count - 1) ScrollBar.ScrollArea = 0;
-            else ScrollBar.ScrollArea = Children.Count - itemsThatFit;
+            if (itemsThatFit > Children.Count - 1)
+            {
+                ScrollBar.ScrollArea = 0;
+                ScrollBar.Hidden = true;
+            }
+            else
+            {
+                ScrollBar.ScrollArea = Children.Count - itemsThatFit;
+                ScrollBar.Hidden = false;
+            }
 
             var topItem = ScrollBar.ScrollPosition;
             if (topItem < 0) topItem = 0;
