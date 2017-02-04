@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,6 +61,9 @@
     <Compile Include="Geo\VariableWidthFont.cs" />
     <Compile Include="HelperExtensions.cs" />
     <Compile Include="InputEventArgs.cs" />
+    <Compile Include="Input\Input.cs" />
+    <Compile Include="Input\InputMapper.cs" />
+    <Compile Include="Input\MessageFilter.cs" />
     <Compile Include="JsonTileSheet.cs" />
     <Compile Include="Layout.cs" />
     <Compile Include="Margin.cs" />
@@ -81,6 +85,7 @@
     <Compile Include="Widgets\TabPanel.cs" />
     <Compile Include="Widgets\TextGrid.cs" />
     <Compile Include="Widgets\VerticalScrollBar.cs" />
+    <Compile Include="Widgets\WidgetListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FNA\FNA.csproj">
