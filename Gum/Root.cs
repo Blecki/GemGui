@@ -23,6 +23,7 @@ namespace Gum
 
         public Rectangle VirtualScreen { get; private set; }
         public Rectangle RealScreen { get; private set; }
+        public Point ResolutionAtCreation { get; private set; }
         public int ScaleRatio { get; private set; }
         public Widget RootItem { get; private set; }
         public Widget PopupItem { get; private set; }
@@ -43,10 +44,7 @@ namespace Gum
         public Root(Point IdealSize, RenderData RenderData)
         {
             this.RenderData = RenderData;
-
-            if (RenderData.ActualScreenBounds.X * RenderData.ActualScreenBounds.Y == 0)
-                RenderData.ActualScreenBounds = new Point(RenderData.Device.Viewport.Width, RenderData.Device.Viewport.Height);
-        
+                    
             ResizeVirtualScreen(IdealSize);
             ResetGui();
 
@@ -57,8 +55,8 @@ namespace Gum
 
         public bool ResolutionChanged()
         {
-            if (RealScreen.Width != RenderData.ActualScreenBounds.X) return true;
-            if (RealScreen.Height != RenderData.ActualScreenBounds.Y) return true;
+            if (ResolutionAtCreation.X != RenderData.ActualScreenBounds.X) return true;
+            if (ResolutionAtCreation.Y != RenderData.ActualScreenBounds.Y) return true;
             return false;
         }
                

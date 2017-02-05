@@ -16,7 +16,7 @@ namespace Gum
     public class RenderData
     {
         public GraphicsDevice Device { get; private set; }
-        public Point ActualScreenBounds { get; set; }
+        public Point ActualScreenBounds { get { return new Point(Device.Viewport.Width, Device.Viewport.Height); } }
         public Effect Effect { get; private set; }
         public Texture2D Texture { get; private set; }
         public Dictionary<String, ITileSheet> TileSheets { get; private set; }
