@@ -72,7 +72,6 @@ namespace GemGuiTest
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2,
                 AutoLayout = AutoLayout.DockTop,
                 Font = "font2"
             });
@@ -88,7 +87,6 @@ namespace GemGuiTest
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2,
                 AutoLayout = AutoLayout.DockTop,
                 Font = "font2"
             });
@@ -104,7 +102,21 @@ namespace GemGuiTest
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2,
+                AutoLayout = AutoLayout.DockTop,
+                Font = "font2"
+            });
+
+            frame.AddChild(new Widget
+            {
+                Text = "View Tilable Border Pane",
+                Border = "border-thin",
+                OnClick = (sender, args) =>
+                {
+                    var dialog = GuiRoot.ConstructWidget(new BorderTilingDialog());
+                    GuiRoot.ShowDialog(dialog);
+                },
+                TextHorizontalAlign = HorizontalAlign.Center,
+                TextVerticalAlign = VerticalAlign.Center,
                 AutoLayout = AutoLayout.DockTop,
                 Font = "font2"
             });
@@ -129,7 +141,6 @@ namespace GemGuiTest
                 },
                 TextHorizontalAlign = HorizontalAlign.Center,
                 TextVerticalAlign = VerticalAlign.Center,
-                TextSize = 2,
                 AutoLayout = AutoLayout.DockTop,
                 Font = "font2"
             });

@@ -30,6 +30,13 @@
 			"TileHeight": 16
 		},
 		{
+			"Name": "tiling-required-border",
+			"Texture": "Content/dwarf_corp_skin/tray-border",
+			"TileWidth": 32,
+			"TileHeight": 32,
+			"RepeatWhenUsedAsBorder": true
+		},
+		{
 			"Name": "border-fancy",
 			"Texture": "Content/dwarf_corp_skin/fancy-border",
 			"TileWidth": 30,

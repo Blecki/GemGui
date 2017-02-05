@@ -23,6 +23,7 @@ namespace Gum
         public int TileWidth;
         public int TileHeight;
         public JsonTileSheetType Type = JsonTileSheetType.TileSheet;
+        public bool RepeatWhenUsedAsBorder = false;
     }
     
     public class JsonTileSheetSet

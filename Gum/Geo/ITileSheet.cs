@@ -14,5 +14,6 @@ namespace Gum
         int TileHeight { get; }
         Point GlyphSize(int TileID);
         Point MeasureString(String S);
+        bool RepeatWhenUsedAsBorder { get; }
     }
 }

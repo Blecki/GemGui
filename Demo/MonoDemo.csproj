@@ -42,6 +42,7 @@
     <StartupObject>GemGuiTest.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BorderTilingDialog.cs" />
     <Compile Include="DemoDialog.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Program.cs" />

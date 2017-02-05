@@ -18,6 +18,8 @@ namespace Gum
         public Rectangle SourceRect { get; private set; }
         public int TileWidth { get; private set; }
         public int TileHeight { get; private set; }
+        public bool RepeatWhenUsedAsBorder { get; private set; }
+
 
         public float SourceURange { get { return (float)SourceRect.Width / (float)TextureWidth; } }
         public float SourceVRange { get { return (float)SourceRect.Height / (float)TextureHeight; } }
@@ -49,13 +51,14 @@ namespace Gum
             return Matrix.CreateScale(ColumnSpan, RowSpan, 1.0f) * TileMatrix(Column, Row);
         }
 
-        public TileSheet(int TextureWidth, int TextureHeight, Rectangle Source, int TileWidth, int TileHeight)
+        public TileSheet(int TextureWidth, int TextureHeight, Rectangle Source, int TileWidth, int TileHeight, bool RepeatWhenUsedAsBorder)
         {
             this.TextureWidth = TextureWidth;
             this.TextureHeight = TextureHeight;
             this.TileWidth = TileWidth;
             this.TileHeight = TileHeight;
             this.SourceRect = Source;
+            this.RepeatWhenUsedAsBorder = RepeatWhenUsedAsBorder;
         }
 
         public Point GlyphSize(int Index)

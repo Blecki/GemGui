@@ -69,7 +69,7 @@ namespace Gum
                 {
                     // Create a tilesheet pointing into the atlas texture.
                     TileSheets.Upsert(texture.Sheet.Name, new TileSheet(Texture.Width,
-                        Texture.Height, texture.Rect, texture.Sheet.TileWidth, texture.Sheet.TileHeight));
+                        Texture.Height, texture.Rect, texture.Sheet.TileWidth, texture.Sheet.TileHeight, texture.Sheet.RepeatWhenUsedAsBorder));
                 }
 
                 // Paste texture data into atlas.

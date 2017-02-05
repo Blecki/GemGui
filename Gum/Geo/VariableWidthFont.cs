@@ -12,6 +12,8 @@ namespace Gum
         private TileSheet Sheet;
         private List<Rectangle> Glyphs;
 
+        public bool RepeatWhenUsedAsBorder { get { return false; } }
+
         private class Texture
         {
             Color[] Data;
@@ -35,7 +37,7 @@ namespace Gum
         public VariableWidthFont(Texture2D Texture, int TextureWidth, int TextureHeight, Rectangle Source)
         {
             var Data = new Texture(Texture);
-            Sheet = new TileSheet(TextureWidth, TextureHeight, Source, 1, 1);
+            Sheet = new TileSheet(TextureWidth, TextureHeight, Source, 1, 1, false);
             Glyphs = new List<Rectangle>();
 
             var x = 0;

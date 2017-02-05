@@ -26,6 +26,49 @@ namespace Gum
                 .Texture(Tiles.TileMatrix(Tile));
         }
 
+        // Tiles a sprite across a rect. Expensive!
+        public static Mesh TiledSprite(Rectangle Rect, ITileSheet Tiles, int Tile)
+        {
+            var meshes = new List<Mesh>();
+            var pos = new Point(Rect.X, Rect.Y);
+
+            while (pos.X < Rect.Right)
+            {
+                while (pos.Y < Rect.Bottom)
+                {
+                    var quad = Mesh.Quad();
+                    var size = new Point(Tiles.TileWidth, Tiles.TileHeight);
+
+                    // Adjust texture coordinates if needed.
+                    if (pos.Y + Tiles.TileHeight > Rect.Bottom)
+                    {
+                        size.Y = Rect.Bottom - pos.Y;
+                        var ratio = (float)(size.Y) / (float)Tiles.TileHeight;
+                        quad.MorphEx(v => { v.TextureCoordinate.Y *= ratio; return v; });
+                    }
+
+                    if (pos.X + Tiles.TileWidth > Rect.Right)
+                    {
+                        size.X = Rect.Right - pos.X;
+                        var ratio = (float)(size.X) / (float)Tiles.TileWidth;
+                        quad.MorphEx(v => { v.TextureCoordinate.X *= ratio; return v; });
+                    }
+
+                    quad.Scale(size.X, size.Y)
+                        .Translate(pos.X, pos.Y)
+                        .Texture(Tiles.TileMatrix(Tile));
+
+                    meshes.Add(quad);
+
+                    pos.Y += Tiles.TileHeight;
+                }
+                pos.Y = Rect.Y;
+                pos.X += Tiles.TileWidth;
+            }
+
+            return Mesh.Merge(meshes.ToArray());
+        }
+
 
         /// <summary>
         /// Create a mesh for a scale9 background. This assumed the tilesheet is 3*3 and positions the 
@@ -70,7 +113,12 @@ namespace Gum
             for (var i = 0; i < 9; ++i)
             {
                 if (rects[i].Width != 0 && rects[i].Height != 0)
-                    result.Add(FittedSprite(rects[i], Tiles, i));
+                {
+                    if (Tiles.RepeatWhenUsedAsBorder)
+                        result.Add(TiledSprite(rects[i], Tiles, i));
+                    else
+                        result.Add(FittedSprite(rects[i], Tiles, i));
+                }
             }
 
              return Merge(result.ToArray());
