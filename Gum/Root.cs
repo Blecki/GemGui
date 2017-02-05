@@ -84,6 +84,7 @@ namespace Gum
         public void ResizeVirtualScreen(Point VirtualSize)
         {
             this.VirtualScreen = new Rectangle(0, 0, VirtualSize.X, VirtualSize.Y);
+            this.ResolutionAtCreation = RenderData.ActualScreenBounds;
 
             // Calculate ideal on screen size.
             // Size should never be smaller than the size of the virtual screen supplied.
