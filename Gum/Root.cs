@@ -54,6 +54,13 @@ namespace Gum
             var mouse = Mouse.GetState();
             MousePosition = ScreenPointToGuiPoint(new Point(mouse.X, mouse.Y));
         }
+
+        public bool ResolutionChanged()
+        {
+            if (RealScreen.Width != RenderData.ActualScreenBounds.X) return true;
+            if (RealScreen.Height != RenderData.ActualScreenBounds.Y) return true;
+            return false;
+        }
                
         /// <summary>
         /// Reset the gui, clearing out all existing widgets.
