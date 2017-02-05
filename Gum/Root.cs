@@ -43,6 +43,9 @@ namespace Gum
         public Root(Point IdealSize, RenderData RenderData)
         {
             this.RenderData = RenderData;
+
+            if (RenderData.ActualScreenBounds.X * RenderData.ActualScreenBounds.Y == 0)
+                RenderData.ActualScreenBounds = new Point(RenderData.Device.Viewport.Width, RenderData.Device.Viewport.Height);
         
             ResizeVirtualScreen(IdealSize);
             ResetGui();
@@ -79,24 +82,24 @@ namespace Gum
 
             // Calculate ideal on screen size.
             // Size should never be smaller than the size of the virtual screen supplied.
-            var screenSize = RenderData.Device.Viewport.Bounds;
+            var screenSize = RenderData.ActualScreenBounds;
             ScaleRatio = 1;
 
             // How many times can we multiply the ideal size and still fit on the screen?
-            while (((VirtualSize.X * (ScaleRatio + 1)) <= screenSize.Width) &&
-                ((VirtualSize.Y * (ScaleRatio + 1)) <= screenSize.Height))
+            while (((VirtualSize.X * (ScaleRatio + 1)) <= screenSize.X) &&
+                ((VirtualSize.Y * (ScaleRatio + 1)) <= screenSize.Y))
                 ScaleRatio += 1;
 
             // How much space did we leave to the left and right? 
-            var horizontalExpansion = ((screenSize.Width - (VirtualSize.X * ScaleRatio)) / 2) / ScaleRatio;
-            var verticalExpansion = ((screenSize.Height - (VirtualSize.Y * ScaleRatio)) / 2) / ScaleRatio;
+            var horizontalExpansion = ((screenSize.X - (VirtualSize.X * ScaleRatio)) / 2) / ScaleRatio;
+            var verticalExpansion = ((screenSize.Y - (VirtualSize.Y * ScaleRatio)) / 2) / ScaleRatio;
 
             VirtualScreen = new Rectangle(0, 0, VirtualSize.X + horizontalExpansion + horizontalExpansion,
                 VirtualSize.Y + verticalExpansion + verticalExpansion);
 
             RealScreen = new Rectangle(0, 0, VirtualScreen.Width * ScaleRatio, VirtualScreen.Height * ScaleRatio);
-            RealScreen = new Rectangle((screenSize.Width - RealScreen.Width) / 2,
-                (screenSize.Height - RealScreen.Height) / 2,
+            RealScreen = new Rectangle((screenSize.X - RealScreen.Width) / 2,
+                (screenSize.Y - RealScreen.Height) / 2,
                 RealScreen.Width, RealScreen.Height);
         }
 
